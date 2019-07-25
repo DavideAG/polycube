@@ -23,7 +23,7 @@ module transparenthelloworld {
       enum SLOWPATH;
     }
     default PASS;
-    description "Action performed on ingress packets";
+    description "Action performed on ingress packets (DROP/PASS/SLOWPATH; default: PASS)";
   }
 
   leaf egress-action {
@@ -33,6 +33,6 @@ module transparenthelloworld {
       enum SLOWPATH;
     }
     default PASS;
-    description "Action performed on egress packets";
+    description "Action performed on egress packets (DROP/PASS/SLOWPATH; default: PASS)";
   }
 }
