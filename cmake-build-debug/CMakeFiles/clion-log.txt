@@ -1,0 +1,40 @@
+/home/davide/clion-2019.2/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/davide/Polycube_repo/polycube
+-- The C compiler identification is GNU 7.4.0
+-- The CXX compiler identification is GNU 7.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Version is GIT-NOTFOUND+ [git: (branch/commit): master/d3034620]
+CMake Error at src/libs/CMakeLists.txt:1 (add_subdirectory):
+  The source directory
+
+    /home/davide/Polycube_repo/polycube/src/libs/bcc
+
+  does not contain a CMakeLists.txt file.
+
+
+-- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.1") 
+CMake Error at src/polycubed/src/CMakeLists.txt:3 (find_package):
+  Could not find a package configuration file provided by "Pistache" with any
+  of the following names:
+
+    PistacheConfig.cmake
+    pistache-config.cmake
+
+  Add the installation prefix of "Pistache" to CMAKE_PREFIX_PATH or set
+  "Pistache_DIR" to a directory containing one of the above files.  If
+  "Pistache" provides a separate development package or SDK, be sure it has
+  been installed.
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/davide/Polycube_repo/polycube/cmake-build-debug/CMakeFiles/CMakeOutput.log".
