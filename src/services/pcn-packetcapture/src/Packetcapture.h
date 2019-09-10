@@ -61,8 +61,6 @@ class Packetcapture : public PacketcaptureBase {
                  polycube::service::PacketInMetadata &md,
                  const std::vector<uint8_t> &packet) override;
 
-  void attach() override;
-
   /// <summary>
   /// Packet capture status
   /// </summary>

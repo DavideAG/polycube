@@ -279,6 +279,7 @@ void Packetcapture::replacePacket(const PacketJsonObject &conf) {
 
 void Packetcapture::delPacket() {
   throw std::runtime_error("Packetcapture::delPacket: method not implemented");
+<<<<<<< HEAD
 }
 
 void Packetcapture::attach() {

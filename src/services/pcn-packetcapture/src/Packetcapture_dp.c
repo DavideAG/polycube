@@ -14,9 +14,124 @@
  * the __sk_buff struct
  * Please look at the libpolycube documentation for more details.
  */
-static __always_inline
-int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
-  // Put your eBPF datapath code here
-  pcn_log(ctx, LOG_INFO, "Hello from polycube! :-)");
-  return RX_DROP;
+
+
+#include <bcc/helpers.h>
+#include <uapi/linux/if_ether.h>
+#include <uapi/linux/in.h>
+#include <uapi/linux/ip.h>
+#include <uapi/linux/tcp.h>
+#include <uapi/linux/udp.h>
+
+struct eth_hdr {
+  __be64 dst : 48;
+  __be64 src : 48;
+  __be16 proto;
+} __attribute__((packed));
+
+struct packetHeaders {
+  uint64_t srcMac;
+  uint64_t dstMac;
+  uint16_t vlan;
+  bool vlan_present;
+  bool ip;
+  uint32_t srcIp;
+  uint32_t dstIp;
+  uint8_t l4proto;
+  uint16_t srcPort;
+  uint16_t dstPort;
+};
+
+/*
+ * BPF map where a single element, the packet header
+ */
+BPF_ARRAY(pkt_header, struct packetHeaders, 1);
+
+            /*TASKS*/
+//-1
+//TODO: impostare i filtri da linea di comando, riceverli e passarli al control path, precisamente a in packetcapture.cpp (packet_in) devo poter vedere i filtri
+
+//-2
+//TODO: parsificare il pacchetto e capirne che tipo di pacchetto è per farne il parsing in modo corretto
+//TODO: riempire di conseguenza la struct packetHeaders da passare al control path
+
+
+static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
+
+
+  int key = 0;
+  struct packetHeaders *pkt;
+  pkt = pkt_header.lookup(&key);
+  if (pkt == NULL) {
+    return RX_DROP;
+  }
+  
+  /* Parsing L2 */                                  //ctx->len == packet.size() in the slow path. We have all data
+  void *data = (void *)(long)ctx->data;             //start pointer
+  void *data_end = (void *)(long)ctx->data_end;     //end pointer
+  struct eth_hdr *ethernet = data;
+  if (data + sizeof(*ethernet) > data_end)
+    return RX_DROP;
+
+  pkt->srcMac = ethernet->src;
+  pkt->dstMac = ethernet->dst;
+  uint16_t ether_type = ethernet->proto;
+
+  pkt->vlan_present = ctx->vlan_present;
+  if (pkt->vlan_present) {
+    ether_type = ctx->vlan_proto;
+    pkt->vlan = (uint16_t)(ctx->vlan_tci & 0x0fff);
+  }
+
+  /* Parsing L3 */
+  struct iphdr *ip = NULL;
+  struct tcphdr *tcp = NULL;
+  struct udphdr *udp = NULL;
+  pkt->ip = 0;
+
+
+  u16 reason = 0;
+  u32 metadata[3] = {0, 0, 0};  //that metadata vector is the metadata vector in md.metadata[] in the slowpath
+
+  int ret = pcn_pkt_controller_with_metadata_stack(ctx, md, reason, metadata);
+  /*if (ether_type == bpf_htons(ETH_P_IP)) {
+    ip = data + sizeof(*ethernet);
+    if (data + sizeof(*ethernet) + sizeof(*ip) > data_end)
+      return RX_DROP;
+    pkt->ip = 1;
+    pkt->srcIp = ip->saddr;
+    pkt->dstIp = ip->daddr;
+
+    if (ip->protocol == IPPROTO_TCP) {
+      tcp = data + sizeof(*ethernet) + sizeof(*ip);
+      if (data + sizeof(*ethernet) + sizeof(*ip) + sizeof(*tcp) > data_end)
+        return RX_DROP;
+      pkt->l4proto = IPPROTO_TCP;
+      pkt->srcPort = tcp->source;
+      pkt->dstPort = tcp->dest;
+    } else if (ip->protocol == IPPROTO_UDP) {
+      udp = data + sizeof(*ethernet) + sizeof(*ip);
+      if (data + sizeof(*ethernet) + sizeof(*ip) + sizeof(*udp) > data_end)
+        return RX_DROP;
+      pkt->l4proto = IPPROTO_UDP;
+      pkt->srcPort = udp->source;
+      pkt->dstPort = udp->dest;
+    }
+
+  }*/
+
+  
+  /* printing values */
+  pcn_log(ctx, LOG_DEBUG, "--- Packet captured ---");
+  pcn_log(ctx, LOG_DEBUG, "valore ritornato dalla pcn_pkt_controller_with_metadata_stack: %d", ret);
+  pcn_log(ctx, LOG_DEBUG, "Source Mac: %d", (int)pkt->srcMac);
+  /*pcn_log(ctx, LOG_DEBUG, "Destination Mac: %M", pkt->dstMac);
+  pcn_log(ctx, LOG_DEBUG, "Ethertype: %x", ether_type);
+  pcn_log(ctx, LOG_DEBUG, "PacketSize: %d\n", ctx->len);*/
+
+  /*pcn_log(ctx, LOG_DEBUG, "Source IP: %I", pkt->srcIp);
+  pcn_log(ctx, LOG_DEBUG, "Destination IP: %I\n", pkt->dstIp);*/
+  
+  return ret;
+  //return RX_OK;
 }
