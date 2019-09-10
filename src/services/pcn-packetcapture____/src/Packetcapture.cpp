@@ -6,6 +6,9 @@
 */
 
 
+// TODO: Modify these methods with your own implementation
+
+
 #include "Packetcapture.h"
 #include "Packetcapture_dp.h"
 
@@ -39,9 +42,11 @@ struct pcap_pkthdr {
   bpf_u_int32 len;    /* actual length of packet */
 };
 
+
 Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObject &conf)
   : TransparentCube(conf.getBase(), { packetcapture_code }, {}),
     PacketcaptureBase(name) {
+
   logger()->info("Creating Packetcapture instance");
   /*  setCapture(conf.getCapture());
     setAnomimize(conf.getAnomimize());
@@ -67,53 +72,58 @@ Packetcapture::~Packetcapture() {
 void Packetcapture::packet_in(polycube::service::Sense sense,
     polycube::service::PacketInMetadata &md,
     const std::vector<uint8_t> &packet) {
-    logger()->debug("Packet received - packet_in. Packet size= {0}", packet.size());
-    //logger()->debug("valore in metadata: {0}", md.metadata[0]);  //testing - 5?
-    
-    //non posso scambiare puntatori, devo utilizzare le mappe condivise per scambiare i dati fra fast e control path
-    packetHeaders pkt_values = get_array_table<packetHeaders>("pkt_header").get(0x0);
-    //logger()->debug("mac sorgente ricevuto: {0}", (int)pkt_values.srcMac);
+    logger()->debug("Packet received");
 
+}
+
+void Packetcapture::attach(){
+    logger()->info("attached");
+  try {
+    std::string parent_peer = get_parent_parameter("peer");
+    logger()->info("parent peer is: {}", parent_peer);
+  } catch (const std::exception &e) {
+    logger()->warn("Error getting parent parameter: {}", e.what());
+  }
 }
 
 PacketcaptureCaptureEnum Packetcapture::getCapture() {
-  throw std::runtime_error("Packetcapture::getCapture: Method not implemented");
+
 }
 
 void Packetcapture::setCapture(const PacketcaptureCaptureEnum &value) {
-  throw std::runtime_error("Packetcapture::setCapture: Method not implemented");
+
 }
 
 bool Packetcapture::getAnomimize() {
-  throw std::runtime_error("Packetcapture::getAnomimize: Method not implemented");
+
 }
 
 void Packetcapture::setAnomimize(const bool &value) {
-  throw std::runtime_error("Packetcapture::setAnomimize: Method not implemented");
+
 }
 
 uint32_t Packetcapture::getLinktype() {
-  throw std::runtime_error("Packetcapture::getLinktype: Method not implemented");
+
 }
 
 void Packetcapture::setLinktype(const uint32_t &value) {
-  throw std::runtime_error("Packetcapture::setLinktype: Method not implemented");
+
 }
 
 std::string Packetcapture::getDump() {
-  throw std::runtime_error("Packetcapture::getDump: Method not implemented");
+
 }
 
 void Packetcapture::setDump(const std::string &value) {
-  throw std::runtime_error("Packetcapture::setDump: Method not implemented");
+
 }
 
 std::shared_ptr<Filters> Packetcapture::getFilters() {
-  throw std::runtime_error("Packetcapture::getFilters: Method not implemented");
+
 }
 
 void Packetcapture::addFilters(const FiltersJsonObject &value) {
-  throw std::runtime_error("Packetcapture::addFilters: Method not implemented");
+
 }
 
 // Basic default implementation, place your extension here (if needed)
@@ -123,15 +133,15 @@ void Packetcapture::replaceFilters(const FiltersJsonObject &conf) {
 }
 
 void Packetcapture::delFilters() {
-  throw std::runtime_error("Packetcapture::delFilters: method not implemented");
+
 }
 
 std::shared_ptr<Packet> Packetcapture::getPacket() {
-  throw std::runtime_error("Packetcapture::getPacket: Method not implemented");
+
 }
 
 void Packetcapture::addPacket(const PacketJsonObject &value) {
-  throw std::runtime_error("Packetcapture::addPacket: Method not implemented");
+
 }
 
 // Basic default implementation, place your extension here (if needed)
@@ -141,7 +151,7 @@ void Packetcapture::replacePacket(const PacketJsonObject &conf) {
 }
 
 void Packetcapture::delPacket() {
-  throw std::runtime_error("Packetcapture::delPacket: method not implemented");
+
 }
 
 

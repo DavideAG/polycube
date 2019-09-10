@@ -8,32 +8,15 @@
 
 #pragma once
 
-
 #include "../base/PacketcaptureBase.h"
 
 #include "Filters.h"
 #include "Packet.h"
 
 
-struct packetHeaders {
-  uint64_t srcMac;
-  uint64_t dstMac;
-  uint16_t vlan;
-  bool vlan_present;
-  bool ip;
-  uint32_t srcIp;
-  uint32_t dstIp;
-  uint8_t l4proto;
-  uint16_t srcPort;
-  uint16_t dstPort;
-};
-
 using namespace polycube::service::model;
 
 class Packetcapture : public PacketcaptureBase {
- 
- struct packetHeaders *pkt_ptr;
-
  public:
   Packetcapture(const std::string name, const PacketcaptureJsonObject &conf);
   virtual ~Packetcapture();
@@ -41,6 +24,8 @@ class Packetcapture : public PacketcaptureBase {
   void packet_in(polycube::service::Sense sense,
                  polycube::service::PacketInMetadata &md,
                  const std::vector<uint8_t> &packet) override;
+
+  void attach() override;
 
   /// <summary>
   /// Packet capture status
