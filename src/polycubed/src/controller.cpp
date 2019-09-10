@@ -60,6 +60,7 @@ int controller_module_tx(struct __sk_buff *ctx) {
   u16 module_index = x & 0x7fff;
   u16 pass_to_stack = x & 0x8000;
 
+
   x = ctx->cb[1];
   u16 reason = x & 0xffff;
 
@@ -80,7 +81,21 @@ int controller_module_tx(struct __sk_buff *ctx) {
   if (r != 0) {
     pcn_log(ctx, LOG_ERR, "[tc-encapsulator]: perf_submit_skb error: %d", r);
   }
+
+  //PROVA PASS TO STACK
+  /*if (ctx->cb[0] == 1) {
+    pcn_log(ctx, LOG_INFO, "valore di ctx_cb[0]: %u", ctx->cb[0]);
+    pcn_log(ctx, LOG_INFO, "valore pass_to_stack: %u", pass_to_stack);
+    pcn_log(ctx, LOG_INFO, "sono nella controller_module_tx in pass_to_stack");
+    pcn_log(ctx, LOG_DEBUG, "[tc-encapsulator]: passing to stack");
+    return 0;
+  }*/
+
+  //PROVA CON UN SERVIZIO NON TRASPARENTE
   if (pass_to_stack) {
+    pcn_log(ctx, LOG_INFO, "valore di ctx_cb[0]: %u", ctx->cb[0]);
+    pcn_log(ctx, LOG_INFO, "valore pass_to_stack: %u", pass_to_stack);
+    pcn_log(ctx, LOG_INFO, "sono nella controller_module_tx in pass_to_stack");
     pcn_log(ctx, LOG_DEBUG, "[tc-encapsulator]: passing to stack");
     return 0;
   }
