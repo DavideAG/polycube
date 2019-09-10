@@ -1,3 +1,6 @@
+#pragma once
+#include <string>
+const std::string packetcapture_code = R"POLYCUBE_DP(
 /**
 * packetcapture API generated from packetcapture.yang
 *
@@ -15,6 +18,12 @@
  * Please look at the libpolycube documentation for more details.
  */
 
+/*static __always_inline
+int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
+  // Put your eBPF datapath code here
+  pcn_log(ctx, LOG_INFO, "Hello from polycube! :-)");
+  return RX_DROP;
+}*/
 
 #include <bcc/helpers.h>
 #include <uapi/linux/if_ether.h>
@@ -42,66 +51,59 @@ struct packetHeaders {
   uint16_t dstPort;
 };
 
-/*
- * BPF map where a single element, the packet header
- */
-BPF_ARRAY(pkt_header, struct packetHeaders, 1);
-
-            /*TASKS*/
-//-1
-//TODO: impostare i filtri da linea di comando, riceverli e passarli al control path, precisamente a in packetcapture.cpp (packet_in) devo poter vedere i filtri
-
-//-2
-//TODO: parsificare il pacchetto e capirne che tipo di pacchetto è per farne il parsing in modo corretto
-//TODO: riempire di conseguenza la struct packetHeaders da passare al control path
-
+BPF_TABLE_SHARED("percpu_array", int, struct packetHeaders, packet, 1);
 
 static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
 
+pcn_log(ctx, LOG_TRACE, "Parser receiving packet from port %d", md->in_port);
 
   int key = 0;
   struct packetHeaders *pkt;
-  pkt = pkt_header.lookup(&key);
+  pkt = packet.lookup(&key);
   if (pkt == NULL) {
     return RX_DROP;
   }
-  
-  /* Parsing L2 */                                  //ctx->len == packet.size() in the slow path. We have all data
-  void *data = (void *)(long)ctx->data;             //start pointer
-  void *data_end = (void *)(long)ctx->data_end;     //end pointer
+  /* Parsing L2 */
+  void *data = (void *)(long)ctx->data;
+  void *data_end = (void *)(long)ctx->data_end;
   struct eth_hdr *ethernet = data;
   if (data + sizeof(*ethernet) > data_end)
     return RX_DROP;
-
   pkt->srcMac = ethernet->src;
   pkt->dstMac = ethernet->dst;
   uint16_t ether_type = ethernet->proto;
 
+
+/*#ifdef POLYCUBE_XDP
+  pkt->vlan_present = pcn_is_vlan_present(ctx);
+  if (pkt->vlan_present) {
+    if (pcn_get_vlan_id(ctx, &(pkt->vlan), &ether_type) < 0)
+      return RX_DROP;
+  }
+#else
   pkt->vlan_present = ctx->vlan_present;
   if (pkt->vlan_present) {
     ether_type = ctx->vlan_proto;
     pkt->vlan = (uint16_t)(ctx->vlan_tci & 0x0fff);
   }
+#endif*/
+
 
   /* Parsing L3 */
+/*
   struct iphdr *ip = NULL;
   struct tcphdr *tcp = NULL;
   struct udphdr *udp = NULL;
   pkt->ip = 0;
-
-
-  u16 reason = 0;
-  u32 metadata[3] = {0, 0, 0};  //that metadata vector is the metadata vector in md.metadata[] in the slowpath
-
-  int ret = pcn_pkt_controller_with_metadata_stack(ctx, md, reason, metadata);
-  /*if (ether_type == bpf_htons(ETH_P_IP)) {
+#if LEVEL > 2
+  if (ether_type == bpf_htons(ETH_P_IP)) {
     ip = data + sizeof(*ethernet);
     if (data + sizeof(*ethernet) + sizeof(*ip) > data_end)
       return RX_DROP;
     pkt->ip = 1;
     pkt->srcIp = ip->saddr;
     pkt->dstIp = ip->daddr;
-
+#if LEVEL == 4
     if (ip->protocol == IPPROTO_TCP) {
       tcp = data + sizeof(*ethernet) + sizeof(*ip);
       if (data + sizeof(*ethernet) + sizeof(*ip) + sizeof(*tcp) > data_end)
@@ -117,21 +119,13 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
       pkt->srcPort = udp->source;
       pkt->dstPort = udp->dest;
     }
-
-  }*/
-
+#endif
+  }
+#endif
+*/
   
-  /* printing values */
-  pcn_log(ctx, LOG_DEBUG, "--- Packet captured ---");
-  pcn_log(ctx, LOG_DEBUG, "valore ritornato dalla pcn_pkt_controller_with_metadata_stack: %d", ret);
-  pcn_log(ctx, LOG_DEBUG, "Source Mac: %d", (int)pkt->srcMac);
-  /*pcn_log(ctx, LOG_DEBUG, "Destination Mac: %M", pkt->dstMac);
-  pcn_log(ctx, LOG_DEBUG, "Ethertype: %x", ether_type);
-  pcn_log(ctx, LOG_DEBUG, "PacketSize: %d\n", ctx->len);*/
+  //TODO: DA TESTARE
+  pcn_log(ctx, LOG_DEBUG, "Ricevuto pacchetto con mac sorgente: %x\n", pkt->srcMac);
 
-  /*pcn_log(ctx, LOG_DEBUG, "Source IP: %I", pkt->srcIp);
-  pcn_log(ctx, LOG_DEBUG, "Destination IP: %I\n", pkt->dstIp);*/
-  
-  return ret;
-  //return RX_OK;
-}
+  return RX_DROP;
+})POLYCUBE_DP";
