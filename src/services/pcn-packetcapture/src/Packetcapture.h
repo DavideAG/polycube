@@ -33,6 +33,8 @@ using namespace polycube::service::model;
 class Packetcapture : public PacketcaptureBase {
  
  struct packetHeaders *pkt_ptr;
+ std::shared_ptr<Filters> filters;
+ 
 
  public:
   Packetcapture(const std::string name, const PacketcaptureJsonObject &conf);
@@ -41,6 +43,8 @@ class Packetcapture : public PacketcaptureBase {
   void packet_in(polycube::service::Sense sense,
                  polycube::service::PacketInMetadata &md,
                  const std::vector<uint8_t> &packet) override;
+
+  void attach() override;
 
   /// <summary>
   /// Packet capture status
@@ -70,7 +74,7 @@ class Packetcapture : public PacketcaptureBase {
   ///
   /// </summary>
   std::shared_ptr<Filters> getFilters() override;
-  void addFilters(const FiltersJsonObject &value) override;
+  void addFilters(const FiltersJsonObject &value) override;   //TODO: devo creare l'istanza filters da packetcapture per inizializzarlo!
   void replaceFilters(const FiltersJsonObject &conf) override;
   void delFilters() override;
 
