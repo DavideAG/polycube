@@ -20,10 +20,7 @@
 #include "JsonObjectBase.h"
 
 #include "FiltersJsonObject.h"
-<<<<<<< HEAD
 #include "GlobalheaderJsonObject.h"
-=======
->>>>>>> Data model and packetcapture stub created
 #include "PacketJsonObject.h"
 #include "polycube/services/cube.h"
 
@@ -72,17 +69,6 @@ public:
   void unsetAnomimize();
 
   /// <summary>
-<<<<<<< HEAD
-=======
-  /// Capture linktype (eg. ethernet, wifi..)
-  /// </summary>
-  uint32_t getLinktype() const;
-  void setLinktype(uint32_t value);
-  bool linktypeIsSet() const;
-  void unsetLinktype();
-
-  /// <summary>
->>>>>>> Data model and packetcapture stub created
   /// dump capture
   /// </summary>
   std::string getDump() const;
@@ -91,7 +77,6 @@ public:
   void unsetDump();
 
   /// <summary>
-<<<<<<< HEAD
   /// operative mode
   /// </summary>
   bool getNetworkmode() const;
@@ -100,8 +85,6 @@ public:
   void unsetNetworkmode();
 
   /// <summary>
-=======
->>>>>>> Data model and packetcapture stub created
   ///
   /// </summary>
   FiltersJsonObject getFilters() const;
@@ -112,7 +95,6 @@ public:
   /// <summary>
   ///
   /// </summary>
-<<<<<<< HEAD
   GlobalheaderJsonObject getGlobalheader() const;
   void setGlobalheader(GlobalheaderJsonObject value);
   bool globalheaderIsSet() const;
@@ -121,8 +103,6 @@ public:
   /// <summary>
   ///
   /// </summary>
-=======
->>>>>>> Data model and packetcapture stub created
   PacketJsonObject getPacket() const;
   void setPacket(PacketJsonObject value);
   bool packetIsSet() const;
@@ -135,7 +115,6 @@ private:
   bool m_captureIsSet;
   bool m_anomimize;
   bool m_anomimizeIsSet;
-<<<<<<< HEAD
   std::string m_dump;
   bool m_dumpIsSet;
   bool m_networkmode;
@@ -144,14 +123,6 @@ private:
   bool m_filtersIsSet;
   GlobalheaderJsonObject m_globalheader;
   bool m_globalheaderIsSet;
-=======
-  uint32_t m_linktype;
-  bool m_linktypeIsSet;
-  std::string m_dump;
-  bool m_dumpIsSet;
-  FiltersJsonObject m_filters;
-  bool m_filtersIsSet;
->>>>>>> Data model and packetcapture stub created
   PacketJsonObject m_packet;
   bool m_packetIsSet;
 };

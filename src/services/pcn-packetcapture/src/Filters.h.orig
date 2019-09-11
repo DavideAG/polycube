@@ -12,7 +12,6 @@
 #include "../base/FiltersBase.h"
 
 
-<<<<<<< HEAD
  struct filters_table {
   bool network_filter_src_flag;
   uint32_t network_filter_src;
@@ -29,15 +28,13 @@
   uint32_t snaplen;
 };
 
-=======
->>>>>>> Data model and packetcapture stub created
 class Packetcapture;
 
 using namespace polycube::service::model;
 
 class Filters : public FiltersBase {
-<<<<<<< HEAD
 
+<<<<<<< HEAD
 
   bool set_srcIp, set_dstIp, set_srcPort, set_dstPort, set_l4proto, set_snaplen;
 
@@ -52,9 +49,18 @@ class Filters : public FiltersBase {
   uint16_t dstPort = 0;
   std::string l4proto = "";
   uint32_t snaplen = 262144;   /* 65535 for no sliced packets */
-
 =======
->>>>>>> Data model and packetcapture stub created
+  std::string srcIp = "0.0.0.0/24";
+  std::string dstIp = "0.0.0.0/24";
+
+  uint16_t srcPort = 0;
+  uint16_t dstPort = 0;
+
+  std::string l4proto = "";
+
+  uint32_t snaplen = 0;
+>>>>>>> Filter class implemented
+
  public:
   Filters(Packetcapture &parent, const FiltersJsonObject &conf);
   virtual ~Filters();
@@ -70,53 +76,38 @@ class Filters : public FiltersBase {
   /// </summary>
   std::string getSrc() override;
   void setSrc(const std::string &value) override;
-<<<<<<< HEAD
   bool srcIp_is_set(){ return set_srcIp; };
-=======
->>>>>>> Data model and packetcapture stub created
 
   /// <summary>
   /// IP destination filter
   /// </summary>
   std::string getDst() override;
   void setDst(const std::string &value) override;
-<<<<<<< HEAD
   bool dstIp_is_set(){ return set_dstIp; };
-=======
->>>>>>> Data model and packetcapture stub created
 
   /// <summary>
   /// Level 4 protocol filter
   /// </summary>
   std::string getL4proto() override;
   void setL4proto(const std::string &value) override;
-<<<<<<< HEAD
   bool l4proto_is_set(){ return set_l4proto; };
-=======
->>>>>>> Data model and packetcapture stub created
 
   /// <summary>
   /// Source port filter
   /// </summary>
   uint16_t getSport() override;
   void setSport(const uint16_t &value) override;
-<<<<<<< HEAD
   bool srcPort_is_set(){ return set_srcPort; };
-=======
->>>>>>> Data model and packetcapture stub created
 
   /// <summary>
   /// Destination port filter
   /// </summary>
   uint16_t getDport() override;
   void setDport(const uint16_t &value) override;
-<<<<<<< HEAD
   bool dstPort_is_set(){ return set_dstPort; };
 
   uint32_t getNetworkFilterSrc();
   uint32_t getNetworkFilterDst();
   uint32_t getNetmaskFilterSrc();
   uint32_t getNetmaskFilterDst();
-=======
->>>>>>> Data model and packetcapture stub created
 };

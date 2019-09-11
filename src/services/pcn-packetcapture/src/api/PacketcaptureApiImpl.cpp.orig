@@ -104,7 +104,6 @@ create_packetcapture_filters_by_id(const std::string &name, const FiltersJsonObj
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Create globalheader by ID
 *
 * Create operation of resource: globalheader*
@@ -123,8 +122,6 @@ create_packetcapture_globalheader_by_id(const std::string &name, const Globalhea
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Create packet by ID
 *
 * Create operation of resource: packet*
@@ -160,7 +157,6 @@ delete_packetcapture_filters_by_id(const std::string &name) {
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Delete globalheader by ID
 *
 * Delete operation of resource: globalheader*
@@ -178,8 +174,6 @@ delete_packetcapture_globalheader_by_id(const std::string &name) {
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Delete packet by ID
 *
 * Delete operation of resource: packet*
@@ -389,7 +383,6 @@ read_packetcapture_filters_src_by_id(const std::string &name) {
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Read globalheader by ID
 *
 * Read operation of resource: globalheader*
@@ -407,8 +400,6 @@ read_packetcapture_globalheader_by_id(const std::string &name) {
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Read linktype by ID
 *
 * Read operation of resource: linktype*
@@ -419,7 +410,6 @@ read_packetcapture_globalheader_by_id(const std::string &name) {
 * uint32_t
 */
 uint32_t
-<<<<<<< HEAD
 read_packetcapture_globalheader_linktype_by_id(const std::string &name) {
   auto packetcapture = get_cube(name);
   auto globalheader = packetcapture->getGlobalheader();
@@ -549,11 +539,6 @@ bool
 read_packetcapture_networkmode_by_id(const std::string &name) {
   auto packetcapture = get_cube(name);
   return packetcapture->getNetworkmode();
-=======
-read_packetcapture_linktype_by_id(const std::string &name) {
-  auto packetcapture = get_cube(name);
-  return packetcapture->getLinktype();
->>>>>>> Data model and packetcapture stub created
 
 }
 
@@ -611,7 +596,6 @@ read_packetcapture_packet_packetlen_by_id(const std::string &name) {
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Read rawdata by ID
 *
 * Read operation of resource: rawdata*
@@ -630,8 +614,6 @@ read_packetcapture_packet_rawdata_by_id(const std::string &name) {
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Read timestamp-microseconds by ID
 *
 * Read operation of resource: timestamp-microseconds*
@@ -686,7 +668,6 @@ replace_packetcapture_filters_by_id(const std::string &name, const FiltersJsonOb
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Replace globalheader by ID
 *
 * Replace operation of resource: globalheader*
@@ -705,8 +686,6 @@ replace_packetcapture_globalheader_by_id(const std::string &name, const Globalhe
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Replace packet by ID
 *
 * Replace operation of resource: packet*
@@ -930,7 +909,6 @@ update_packetcapture_filters_src_by_id(const std::string &name, const std::strin
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Update globalheader by ID
 *
 * Update operation of resource: globalheader*
@@ -950,8 +928,6 @@ update_packetcapture_globalheader_by_id(const std::string &name, const Globalhea
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Update linktype by ID
 *
 * Update operation of resource: linktype*
@@ -963,7 +939,6 @@ update_packetcapture_globalheader_by_id(const std::string &name, const Globalhea
 *
 */
 void
-<<<<<<< HEAD
 update_packetcapture_globalheader_linktype_by_id(const std::string &name, const uint32_t &value) {
   auto packetcapture = get_cube(name);
   auto globalheader = packetcapture->getGlobalheader();
@@ -1083,12 +1058,6 @@ update_packetcapture_globalheader_version_minor_by_id(const std::string &name, c
   auto globalheader = packetcapture->getGlobalheader();
 
   return globalheader->setVersionMinor(value);
-=======
-update_packetcapture_linktype_by_id(const std::string &name, const uint32_t &value) {
-  auto packetcapture = get_cube(name);
-
-  return packetcapture->setLinktype(value);
->>>>>>> Data model and packetcapture stub created
 }
 
 /**
@@ -1107,7 +1076,6 @@ update_packetcapture_list_by_id(const std::vector<PacketcaptureJsonObject> &valu
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Update networkmode by ID
 *
 * Update operation of resource: networkmode*
@@ -1126,8 +1094,6 @@ update_packetcapture_networkmode_by_id(const std::string &name, const bool &valu
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Update packet by ID
 *
 * Update operation of resource: packet*
@@ -1185,7 +1151,6 @@ update_packetcapture_packet_packetlen_by_id(const std::string &name, const uint3
 }
 
 /**
-<<<<<<< HEAD
 * @brief   Update rawdata by ID
 *
 * Update operation of resource: rawdata*
@@ -1205,8 +1170,6 @@ update_packetcapture_packet_rawdata_by_id(const std::string &name, const std::st
 }
 
 /**
-=======
->>>>>>> Data model and packetcapture stub created
 * @brief   Update timestamp-microseconds by ID
 *
 * Update operation of resource: timestamp-microseconds*

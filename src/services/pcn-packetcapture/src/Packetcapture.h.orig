@@ -8,11 +8,8 @@
 
 #pragma once
 
-<<<<<<< HEAD
 #include <list>
 #include <fstream>
-=======
->>>>>>> Added Map to pass packet values to control path
 
 #include "../base/PacketcaptureBase.h"
 
@@ -38,19 +35,6 @@ struct packetHeaders {
   uint16_t dstPort;
 };
 
-struct packetHeaders {
-  uint64_t srcMac;
-  uint64_t dstMac;
-  uint16_t vlan;
-  bool vlan_present;
-  bool ip;
-  uint32_t srcIp;
-  uint32_t dstIp;
-  uint8_t l4proto;
-  uint16_t srcPort;
-  uint16_t dstPort;
-};
-
 using namespace polycube::service::model;
 using polycube::service::ProgramType;
 using polycube::service::Sense;
@@ -58,8 +42,8 @@ using polycube::service::Sense;
 class Packetcapture : public PacketcaptureBase {
  
  struct packetHeaders *pkt_ptr;
-<<<<<<< HEAD
  std::shared_ptr<Filters> filters;
+<<<<<<< HEAD
  std::shared_ptr<Globalheader> global_header;
  std::list<std::shared_ptr<Packet>> packets_captured;
  uint8_t CapStatus;
@@ -70,7 +54,8 @@ class Packetcapture : public PacketcaptureBase {
  
   void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 =======
->>>>>>> Added Map to pass packet values to control path
+ 
+>>>>>>> Filter class implemented
 
  public:
   Packetcapture(const std::string name, const PacketcaptureJsonObject &conf);
@@ -79,6 +64,8 @@ class Packetcapture : public PacketcaptureBase {
   void packet_in(polycube::service::Sense sense,
                  polycube::service::PacketInMetadata &md,
                  const std::vector<uint8_t> &packet) override;
+
+  void attach() override;
 
   /// <summary>
   /// Packet capture status
@@ -107,7 +94,7 @@ class Packetcapture : public PacketcaptureBase {
   ///
   /// </summary>
   std::shared_ptr<Filters> getFilters() override;
-  void addFilters(const FiltersJsonObject &value) override;
+  void addFilters(const FiltersJsonObject &value) override;   //TODO: devo creare l'istanza filters da packetcapture per inizializzarlo!
   void replaceFilters(const FiltersJsonObject &conf) override;
   void delFilters() override;
 

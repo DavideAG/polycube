@@ -61,6 +61,8 @@ class Packetcapture : public PacketcaptureBase {
                  polycube::service::PacketInMetadata &md,
                  const std::vector<uint8_t> &packet) override;
 
+  void attach() override;
+
   /// <summary>
   /// Packet capture status
   /// </summary>
@@ -88,7 +90,7 @@ class Packetcapture : public PacketcaptureBase {
   ///
   /// </summary>
   std::shared_ptr<Filters> getFilters() override;
-  void addFilters(const FiltersJsonObject &value) override;
+  void addFilters(const FiltersJsonObject &value) override;   //TODO: devo creare l'istanza filters da packetcapture per inizializzarlo!
   void replaceFilters(const FiltersJsonObject &conf) override;
   void delFilters() override;
 

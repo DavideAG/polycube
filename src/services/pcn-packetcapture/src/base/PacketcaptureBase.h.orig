@@ -19,10 +19,7 @@
 #include "../serializer/PacketcaptureJsonObject.h"
 
 #include "../Filters.h"
-<<<<<<< HEAD
 #include "../Globalheader.h"
-=======
->>>>>>> Data model and packetcapture stub created
 #include "../Packet.h"
 
 #include "polycube/services/transparent_cube.h"
@@ -58,7 +55,6 @@ class PacketcaptureBase: public virtual polycube::service::TransparentCube {
   virtual void setAnomimize(const bool &value) = 0;
 
   /// <summary>
-<<<<<<< HEAD
   /// dump capture
   /// </summary>
   virtual std::string getDump() = 0;
@@ -69,18 +65,6 @@ class PacketcaptureBase: public virtual polycube::service::TransparentCube {
   /// </summary>
   virtual bool getNetworkmode() = 0;
   virtual void setNetworkmode(const bool &value) = 0;
-=======
-  /// Capture linktype (eg. ethernet, wifi..)
-  /// </summary>
-  virtual uint32_t getLinktype() = 0;
-  virtual void setLinktype(const uint32_t &value) = 0;
-
-  /// <summary>
-  /// dump capture
-  /// </summary>
-  virtual std::string getDump() = 0;
-  virtual void setDump(const std::string &value) = 0;
->>>>>>> Data model and packetcapture stub created
 
   /// <summary>
   ///
@@ -93,7 +77,6 @@ class PacketcaptureBase: public virtual polycube::service::TransparentCube {
   /// <summary>
   ///
   /// </summary>
-<<<<<<< HEAD
   virtual std::shared_ptr<Globalheader> getGlobalheader() = 0;
   virtual void addGlobalheader(const GlobalheaderJsonObject &value) = 0;
   virtual void replaceGlobalheader(const GlobalheaderJsonObject &conf);
@@ -102,8 +85,6 @@ class PacketcaptureBase: public virtual polycube::service::TransparentCube {
   /// <summary>
   ///
   /// </summary>
-=======
->>>>>>> Data model and packetcapture stub created
   virtual std::shared_ptr<Packet> getPacket() = 0;
   virtual void addPacket(const PacketJsonObject &value) = 0;
   virtual void replacePacket(const PacketJsonObject &conf);

@@ -8,10 +8,6 @@
 
 #pragma once
 
-<<<<<<< HEAD
-=======
-
->>>>>>> Data model and packetcapture stub created
 #include "../base/PacketBase.h"
 
 
@@ -20,7 +16,6 @@ class Packetcapture;
 using namespace polycube::service::model;
 
 class Packet : public PacketBase {
-<<<<<<< HEAD
 
   uint32_t ts_microsec;
   uint32_t ts_sec;
@@ -29,9 +24,6 @@ class Packet : public PacketBase {
 
  public:
   std::vector<uint8_t> packet;
-=======
- public:
->>>>>>> Data model and packetcapture stub created
   Packet(Packetcapture &parent, const PacketJsonObject &conf);
   virtual ~Packet();
 
@@ -58,7 +50,6 @@ class Packet : public PacketBase {
   /// </summary>
   uint32_t getTimestampMicroseconds() override;
   void setTimestampMicroseconds(const uint32_t &value) override;
-<<<<<<< HEAD
 
   void setRawPacketData(const std::vector<uint8_t> &input);
   std::vector<uint8_t> getRawPacketData();
@@ -68,6 +59,4 @@ class Packet : public PacketBase {
   /// </summary>
   std::string getRawdata() override;
   void setRawdata(const std::string &value) override;
-=======
->>>>>>> Data model and packetcapture stub created
 };

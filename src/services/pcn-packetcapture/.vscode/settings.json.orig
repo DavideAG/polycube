@@ -33,6 +33,10 @@
         "memory_resource": "cpp",
         "numeric": "cpp",
         "optional": "cpp",
+<<<<<<< HEAD
+=======
+        "random": "cpp",
+>>>>>>> Filter class implemented
         "ratio": "cpp",
         "regex": "cpp",
         "set": "cpp",
@@ -43,6 +47,10 @@
         "type_traits": "cpp",
         "utility": "cpp",
         "fstream": "cpp",
+<<<<<<< HEAD
+=======
+        "future": "cpp",
+>>>>>>> Filter class implemented
         "initializer_list": "cpp",
         "iomanip": "cpp",
         "iosfwd": "cpp",
@@ -56,7 +64,10 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "thread": "cpp",
+<<<<<<< HEAD
         "cinttypes": "cpp",
+=======
+>>>>>>> Filter class implemented
         "typeinfo": "cpp",
         "valarray": "cpp"
     }

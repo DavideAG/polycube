@@ -68,7 +68,6 @@ public:
   bool timestampMicrosecondsIsSet() const;
   void unsetTimestampMicroseconds();
 
-<<<<<<< HEAD
   /// <summary>
   /// packet raw data
   /// </summary>
@@ -77,8 +76,6 @@ public:
   bool rawdataIsSet() const;
   void unsetRawdata();
 
-=======
->>>>>>> Data model and packetcapture stub created
 private:
   uint32_t m_capturelen;
   bool m_capturelenIsSet;
@@ -88,11 +85,8 @@ private:
   bool m_timestampSecondsIsSet;
   uint32_t m_timestampMicroseconds;
   bool m_timestampMicrosecondsIsSet;
-<<<<<<< HEAD
   std::string m_rawdata;
   bool m_rawdataIsSet;
-=======
->>>>>>> Data model and packetcapture stub created
 };
 
 }

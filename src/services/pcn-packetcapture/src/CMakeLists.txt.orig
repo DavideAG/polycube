@@ -20,26 +20,18 @@ add_library(pcn-packetcapture SHARED
   ${API_SOURCES}
   ${BASE_SOURCES}
   Filters.cpp
-<<<<<<< HEAD
   Globalheader.cpp
-=======
->>>>>>> Data model and packetcapture stub created
   Packet.cpp
   Packetcapture.cpp
   Packetcapture-lib.cpp)
 
 # load ebpf datapath code a variable
 load_file_as_variable(pcn-packetcapture
-<<<<<<< HEAD
   Packetcapture_dp_ingress.c
   packetcapture_code_ingress)
 load_file_as_variable(pcn-packetcapture
   Packetcapture_dp_egress.c
   packetcapture_code_egress) 
-=======
-  Packetcapture_dp.c
-  packetcapture_code)
->>>>>>> Data model and packetcapture stub created
 
 # load datamodel in a variable
 load_file_as_variable(pcn-packetcapture

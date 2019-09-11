@@ -6,7 +6,6 @@
 */
 
 
-<<<<<<< HEAD
 #include "Filters.h"
 #include "Packetcapture.h"
 #include "Packetcapture_dp_ingress.h"
@@ -15,19 +14,12 @@
 
 
 Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
+<<<<<<< HEAD
     : FiltersBase(parent), set_dstIp(false), set_srcIp(false), set_dstPort(false), set_srcPort(false), set_l4proto(false) {
-
 =======
-// TODO: Modify these methods with your own implementation
-
-
-#include "Filters.h"
-#include "Packetcapture.h"
-
-
-Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
     : FiltersBase(parent) {
->>>>>>> Data model and packetcapture stub created
+>>>>>>> Filter class implemented
+
   if (conf.snaplenIsSet()) {
     setSnaplen(conf.getSnaplen());
   }
@@ -51,26 +43,24 @@ Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
   if (conf.dportIsSet()) {
     setDport(conf.getDport());
   }
-<<<<<<< HEAD
   bootstrap = false;
   snaplen = 262144;
-=======
-
->>>>>>> Data model and packetcapture stub created
 }
 
 Filters::~Filters() {}
 
 uint32_t Filters::getSnaplen() {
-<<<<<<< HEAD
   return snaplen;
 }
 
 void Filters::setSnaplen(const uint32_t &value) {
   snaplen = value;
+<<<<<<< HEAD
   set_snaplen = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
+=======
+>>>>>>> Filter class implemented
 }
 
 std::string Filters::getSrc() {
@@ -79,6 +69,7 @@ std::string Filters::getSrc() {
 
 void Filters::setSrc(const std::string &value) {
   srcIp = value;
+<<<<<<< HEAD
 
   uint32_t ip_src_filter = 0;
   netmaskSrc = (0xFFFFFFFF << (32 - std::stoi(value.substr(value.find("/")+1)))) & 0xFFFFFFFF;
@@ -91,6 +82,8 @@ void Filters::setSrc(const std::string &value) {
   set_srcIp = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
+=======
+>>>>>>> Filter class implemented
 }
 
 std::string Filters::getDst() {
@@ -99,6 +92,7 @@ std::string Filters::getDst() {
 
 void Filters::setDst(const std::string &value) {
   dstIp = value;
+<<<<<<< HEAD
 
   uint32_t ip_dst_filter = 0;
   netmaskDst = (0xFFFFFFFF << (32 - std::stoi(value.substr(value.find("/")+1)))) & 0xFFFFFFFF;
@@ -111,6 +105,8 @@ void Filters::setDst(const std::string &value) {
   set_dstIp = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
+=======
+>>>>>>> Filter class implemented
 }
 
 std::string Filters::getL4proto() {
@@ -118,12 +114,18 @@ std::string Filters::getL4proto() {
 }
 
 void Filters::setL4proto(const std::string &value) {
+<<<<<<< HEAD
   if((value.compare(std::string("tcp")) == 0) || (value.compare(std::string("udp")) == 0)){
     l4proto = value;
     set_l4proto = true;
     if(!bootstrap)
       parent_.updateFiltersMaps();
   }else
+=======
+  if((value.compare(std::string("tcp")) == 0) || (value.compare(std::string("udp")) == 0))
+    l4proto = value;
+  else
+>>>>>>> Filter class implemented
     throw std::runtime_error("Bad value at setL4proto. Please enter 'tcp' or 'udp'");
 }
 
@@ -133,9 +135,12 @@ uint16_t Filters::getSport() {
 
 void Filters::setSport(const uint16_t &value) {
   srcPort = value;
+<<<<<<< HEAD
   set_srcPort = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
+=======
+>>>>>>> Filter class implemented
 }
 
 uint16_t Filters::getDport() {
@@ -144,6 +149,7 @@ uint16_t Filters::getDport() {
 
 void Filters::setDport(const uint16_t &value) {
   dstPort = value;
+<<<<<<< HEAD
   set_dstPort = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
@@ -165,52 +171,5 @@ uint32_t Filters::getNetmaskFilterDst(){
   return netmaskDst;
 }
 =======
-  throw std::runtime_error("Filters::getSnaplen: Method not implemented");
 }
-
-void Filters::setSnaplen(const uint32_t &value) {
-  throw std::runtime_error("Filters::setSnaplen: Method not implemented");
-}
-
-std::string Filters::getSrc() {
-  throw std::runtime_error("Filters::getSrc: Method not implemented");
-}
-
-void Filters::setSrc(const std::string &value) {
-  throw std::runtime_error("Filters::setSrc: Method not implemented");
-}
-
-std::string Filters::getDst() {
-  throw std::runtime_error("Filters::getDst: Method not implemented");
-}
-
-void Filters::setDst(const std::string &value) {
-  throw std::runtime_error("Filters::setDst: Method not implemented");
-}
-
-std::string Filters::getL4proto() {
-  throw std::runtime_error("Filters::getL4proto: Method not implemented");
-}
-
-void Filters::setL4proto(const std::string &value) {
-  throw std::runtime_error("Filters::setL4proto: Method not implemented");
-}
-
-uint16_t Filters::getSport() {
-  throw std::runtime_error("Filters::getSport: Method not implemented");
-}
-
-void Filters::setSport(const uint16_t &value) {
-  throw std::runtime_error("Filters::setSport: Method not implemented");
-}
-
-uint16_t Filters::getDport() {
-  throw std::runtime_error("Filters::getDport: Method not implemented");
-}
-
-void Filters::setDport(const uint16_t &value) {
-  throw std::runtime_error("Filters::setDport: Method not implemented");
-}
-
-
->>>>>>> Data model and packetcapture stub created
+>>>>>>> Filter class implemented

@@ -6,7 +6,6 @@
 */
 
 
-<<<<<<< HEAD
 #include <string>
 #include <sys/time.h>
 #include <iomanip>
@@ -14,8 +13,6 @@
 #include <ctime>
 #include <fstream>
 #include "unistd.h"
-=======
->>>>>>> Added Map to pass packet values to control path
 #include "Packetcapture.h"
 #include "Packetcapture_dp_ingress.h"
 #include "Packetcapture_dp_egress.h"
@@ -53,6 +50,7 @@ Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObje
   if (conf.dumpIsSet()) {
     setDump(conf.getDump());
   }
+<<<<<<< HEAD
 
   setNetworkmode(conf.getNetworkmode());
   addFilters(conf.getFilters());
@@ -67,6 +65,13 @@ Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObje
   t_filters_out.set(0x0, ft_init);
   writeHeader = true;
   dt = "";
+=======
+  */
+  //auto value = conf.getFilters();
+  addFilters(conf.getFilters());
+  /*auto value = conf.getPacket();
+  addPacket(conf.getPacket());*/
+>>>>>>> Filter class implemented
 }
 
 void Packetcapture::writeDump(const std::vector<uint8_t> &packet,
@@ -129,7 +134,6 @@ Packetcapture::~Packetcapture() {
 void Packetcapture::packet_in(polycube::service::Sense sense,
     polycube::service::PacketInMetadata &md,
     const std::vector<uint8_t> &packet) {
-<<<<<<< HEAD
   
   Tins::EthernetII pkt(&packet[0], packet.size());
   packetHeaders pkt_values;
@@ -228,55 +232,6 @@ std::shared_ptr<Filters> Packetcapture::getFilters() {
 
 void Packetcapture::addFilters(const FiltersJsonObject &value) {
   filters = std::shared_ptr<Filters>(new Filters(*this, value));
-=======
-    logger()->debug("Packet received - packet_in. Packet size= {0}", packet.size());
-    //logger()->debug("valore in metadata: {0}", md.metadata[0]);  //testing - 5?
-    
-    //non posso scambiare puntatori, devo utilizzare le mappe condivise per scambiare i dati fra fast e control path
-    packetHeaders pkt_values = get_array_table<packetHeaders>("pkt_header").get(0x0);
-    //logger()->debug("mac sorgente ricevuto: {0}", (int)pkt_values.srcMac);
-
-}
-
-PacketcaptureCaptureEnum Packetcapture::getCapture() {
-  throw std::runtime_error("Packetcapture::getCapture: Method not implemented");
-}
-
-void Packetcapture::setCapture(const PacketcaptureCaptureEnum &value) {
-  throw std::runtime_error("Packetcapture::setCapture: Method not implemented");
-}
-
-bool Packetcapture::getAnomimize() {
-  throw std::runtime_error("Packetcapture::getAnomimize: Method not implemented");
-}
-
-void Packetcapture::setAnomimize(const bool &value) {
-  throw std::runtime_error("Packetcapture::setAnomimize: Method not implemented");
-}
-
-uint32_t Packetcapture::getLinktype() {
-  throw std::runtime_error("Packetcapture::getLinktype: Method not implemented");
-}
-
-void Packetcapture::setLinktype(const uint32_t &value) {
-  throw std::runtime_error("Packetcapture::setLinktype: Method not implemented");
-}
-
-std::string Packetcapture::getDump() {
-  throw std::runtime_error("Packetcapture::getDump: Method not implemented");
-}
-
-void Packetcapture::setDump(const std::string &value) {
-  throw std::runtime_error("Packetcapture::setDump: Method not implemented");
-}
-
-std::shared_ptr<Filters> Packetcapture::getFilters() {
-  throw std::runtime_error("Packetcapture::getFilters: Method not implemented");
-}
-
-void Packetcapture::addFilters(const FiltersJsonObject &value) {
-  throw std::runtime_error("Packetcapture::addFilters: Method not implemented");
->>>>>>> Added Map to pass packet values to control path
 }
 
 void Packetcapture::replaceFilters(const FiltersJsonObject &conf) {
@@ -289,7 +244,6 @@ void Packetcapture::delFilters() {
 
 /* return the first packet in the queue if exist */
 std::shared_ptr<Packet> Packetcapture::getPacket() {
-<<<<<<< HEAD
   if(packets_captured.size() != 0){
     auto p = packets_captured.front();
     if(network_mode_flag){                            /* pop this element */
@@ -321,9 +275,6 @@ void Packetcapture::addPacket(const std::vector<uint8_t> &packet,
     }
     p->setRawPacketData(packet);
     packets_captured.push_back(p);
-=======
-  throw std::runtime_error("Packetcapture::getPacket: Method not implemented");
->>>>>>> Added Map to pass packet values to control path
 }
 
 void Packetcapture::addPacket(const PacketJsonObject &value) {
@@ -385,6 +336,7 @@ void Packetcapture::updateFiltersMaps(){
     ft.network_filter_dst_flag = false;
   }
 
+<<<<<<< HEAD
   ft.snaplen = filters->getSnaplen();
 
   auto ft_fast_in = get_array_table<filters_table>("filters_map", 0, ProgramType::INGRESS);
@@ -396,8 +348,6 @@ void Packetcapture::updateFiltersMaps(){
 
 std::shared_ptr<Globalheader> Packetcapture::getGlobalheader() {
   return global_header;
-=======
->>>>>>> Added Map to pass packet values to control path
 }
 
 void Packetcapture::addGlobalheader(const GlobalheaderJsonObject &value) {
@@ -411,4 +361,8 @@ void Packetcapture::replaceGlobalheader(const GlobalheaderJsonObject &conf) {
 
 void Packetcapture::delGlobalheader() {
   throw std::runtime_error("Packetcapture::delGlobalheader: method not implemented");
+=======
+void Packetcapture::attach() {
+  logger()->info("attached");
+>>>>>>> Filter class implemented
 }

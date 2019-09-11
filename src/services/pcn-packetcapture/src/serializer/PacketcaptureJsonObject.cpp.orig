@@ -23,17 +23,11 @@ PacketcaptureJsonObject::PacketcaptureJsonObject() {
   m_captureIsSet = true;
   m_anomimize = false;
   m_anomimizeIsSet = true;
-<<<<<<< HEAD
   m_dumpIsSet = false;
   m_networkmode = false;
   m_networkmodeIsSet = true;
   m_filtersIsSet = false;
   m_globalheaderIsSet = false;
-=======
-  m_linktypeIsSet = false;
-  m_dumpIsSet = false;
-  m_filtersIsSet = false;
->>>>>>> Data model and packetcapture stub created
   m_packetIsSet = false;
 }
 
@@ -42,16 +36,10 @@ PacketcaptureJsonObject::PacketcaptureJsonObject(const nlohmann::json &val) :
   m_nameIsSet = false;
   m_captureIsSet = false;
   m_anomimizeIsSet = false;
-<<<<<<< HEAD
   m_dumpIsSet = false;
   m_networkmodeIsSet = false;
   m_filtersIsSet = false;
   m_globalheaderIsSet = false;
-=======
-  m_linktypeIsSet = false;
-  m_dumpIsSet = false;
-  m_filtersIsSet = false;
->>>>>>> Data model and packetcapture stub created
   m_packetIsSet = false;
 
 
@@ -67,21 +55,12 @@ PacketcaptureJsonObject::PacketcaptureJsonObject(const nlohmann::json &val) :
     setAnomimize(val.at("anomimize").get<bool>());
   }
 
-<<<<<<< HEAD
   if (val.count("dump")) {
     setDump(val.at("dump").get<std::string>());
   }
 
   if (val.count("networkmode")) {
     setNetworkmode(val.at("networkmode").get<bool>());
-=======
-  if (val.count("linktype")) {
-    setLinktype(val.at("linktype").get<uint32_t>());
-  }
-
-  if (val.count("dump")) {
-    setDump(val.at("dump").get<std::string>());
->>>>>>> Data model and packetcapture stub created
   }
 
   if (val.count("filters")) {
@@ -91,7 +70,6 @@ PacketcaptureJsonObject::PacketcaptureJsonObject(const nlohmann::json &val) :
     }
   }
 
-<<<<<<< HEAD
   if (val.count("globalheader")) {
     if (!val["globalheader"].is_null()) {
       GlobalheaderJsonObject newItem { val["globalheader"] };
@@ -99,8 +77,6 @@ PacketcaptureJsonObject::PacketcaptureJsonObject(const nlohmann::json &val) :
     }
   }
 
-=======
->>>>>>> Data model and packetcapture stub created
   if (val.count("packet")) {
     if (!val["packet"].is_null()) {
       PacketJsonObject newItem { val["packet"] };
@@ -127,34 +103,22 @@ nlohmann::json PacketcaptureJsonObject::toJson() const {
     val["anomimize"] = m_anomimize;
   }
 
-<<<<<<< HEAD
   if (m_dumpIsSet) {
     val["dump"] = m_dump;
   }
 
   if (m_networkmodeIsSet) {
     val["networkmode"] = m_networkmode;
-=======
-  if (m_linktypeIsSet) {
-    val["linktype"] = m_linktype;
-  }
-
-  if (m_dumpIsSet) {
-    val["dump"] = m_dump;
->>>>>>> Data model and packetcapture stub created
   }
 
   if (m_filtersIsSet) {
     val["filters"] = JsonObjectBase::toJson(m_filters);
   }
 
-<<<<<<< HEAD
   if (m_globalheaderIsSet) {
     val["globalheader"] = JsonObjectBase::toJson(m_globalheader);
   }
 
-=======
->>>>>>> Data model and packetcapture stub created
   if (m_packetIsSet) {
     val["packet"] = JsonObjectBase::toJson(m_packet);
   }
@@ -237,26 +201,6 @@ void PacketcaptureJsonObject::unsetAnomimize() {
   m_anomimizeIsSet = false;
 }
 
-<<<<<<< HEAD
-=======
-uint32_t PacketcaptureJsonObject::getLinktype() const {
-  return m_linktype;
-}
-
-void PacketcaptureJsonObject::setLinktype(uint32_t value) {
-  m_linktype = value;
-  m_linktypeIsSet = true;
-}
-
-bool PacketcaptureJsonObject::linktypeIsSet() const {
-  return m_linktypeIsSet;
-}
-
-void PacketcaptureJsonObject::unsetLinktype() {
-  m_linktypeIsSet = false;
-}
-
->>>>>>> Data model and packetcapture stub created
 std::string PacketcaptureJsonObject::getDump() const {
   return m_dump;
 }
@@ -274,7 +218,6 @@ void PacketcaptureJsonObject::unsetDump() {
   m_dumpIsSet = false;
 }
 
-<<<<<<< HEAD
 bool PacketcaptureJsonObject::getNetworkmode() const {
   return m_networkmode;
 }
@@ -292,8 +235,6 @@ void PacketcaptureJsonObject::unsetNetworkmode() {
   m_networkmodeIsSet = false;
 }
 
-=======
->>>>>>> Data model and packetcapture stub created
 FiltersJsonObject PacketcaptureJsonObject::getFilters() const {
   return m_filters;
 }
@@ -311,7 +252,6 @@ void PacketcaptureJsonObject::unsetFilters() {
   m_filtersIsSet = false;
 }
 
-<<<<<<< HEAD
 GlobalheaderJsonObject PacketcaptureJsonObject::getGlobalheader() const {
   return m_globalheader;
 }
@@ -329,8 +269,6 @@ void PacketcaptureJsonObject::unsetGlobalheader() {
   m_globalheaderIsSet = false;
 }
 
-=======
->>>>>>> Data model and packetcapture stub created
 PacketJsonObject PacketcaptureJsonObject::getPacket() const {
   return m_packet;
 }

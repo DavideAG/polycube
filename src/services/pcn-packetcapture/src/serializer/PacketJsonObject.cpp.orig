@@ -22,10 +22,7 @@ PacketJsonObject::PacketJsonObject() {
   m_packetlenIsSet = false;
   m_timestampSecondsIsSet = false;
   m_timestampMicrosecondsIsSet = false;
-<<<<<<< HEAD
   m_rawdataIsSet = false;
-=======
->>>>>>> Data model and packetcapture stub created
 }
 
 PacketJsonObject::PacketJsonObject(const nlohmann::json &val) :
@@ -34,10 +31,7 @@ PacketJsonObject::PacketJsonObject(const nlohmann::json &val) :
   m_packetlenIsSet = false;
   m_timestampSecondsIsSet = false;
   m_timestampMicrosecondsIsSet = false;
-<<<<<<< HEAD
   m_rawdataIsSet = false;
-=======
->>>>>>> Data model and packetcapture stub created
 
 
   if (val.count("capturelen")) {
@@ -55,13 +49,10 @@ PacketJsonObject::PacketJsonObject(const nlohmann::json &val) :
   if (val.count("timestamp-microseconds")) {
     setTimestampMicroseconds(val.at("timestamp-microseconds").get<uint32_t>());
   }
-<<<<<<< HEAD
 
   if (val.count("rawdata")) {
     setRawdata(val.at("rawdata").get<std::string>());
   }
-=======
->>>>>>> Data model and packetcapture stub created
 }
 
 nlohmann::json PacketJsonObject::toJson() const {
@@ -86,13 +77,10 @@ nlohmann::json PacketJsonObject::toJson() const {
     val["timestamp-microseconds"] = m_timestampMicroseconds;
   }
 
-<<<<<<< HEAD
   if (m_rawdataIsSet) {
     val["rawdata"] = m_rawdata;
   }
 
-=======
->>>>>>> Data model and packetcapture stub created
   return val;
 }
 
@@ -164,7 +152,6 @@ void PacketJsonObject::unsetTimestampMicroseconds() {
   m_timestampMicrosecondsIsSet = false;
 }
 
-<<<<<<< HEAD
 std::string PacketJsonObject::getRawdata() const {
   return m_rawdata;
 }
@@ -182,8 +169,6 @@ void PacketJsonObject::unsetRawdata() {
   m_rawdataIsSet = false;
 }
 
-=======
->>>>>>> Data model and packetcapture stub created
 
 }
 }
