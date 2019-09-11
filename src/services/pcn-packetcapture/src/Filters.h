@@ -17,6 +17,17 @@ class Packetcapture;
 using namespace polycube::service::model;
 
 class Filters : public FiltersBase {
+
+  std::string srcIp = "0.0.0.0/24";
+  std::string dstIp = "0.0.0.0/24";
+
+  uint16_t srcPort = 0;
+  uint16_t dstPort = 0;
+
+  std::string l4proto = "";
+
+  uint32_t snaplen = 0;
+
  public:
   Filters(Packetcapture &parent, const FiltersJsonObject &conf);
   virtual ~Filters();

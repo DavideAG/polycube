@@ -23,6 +23,7 @@
 #include <uapi/linux/tcp.h>
 #include <uapi/linux/udp.h>
 
+
 struct eth_hdr {
   __be64 dst : 48;
   __be64 src : 48;
@@ -49,7 +50,7 @@ BPF_ARRAY(pkt_header, struct packetHeaders, 1);
 
             /*TASKS*/
 //-1
-//TODO: impostare i filtri da linea di comando, riceverli e passarli al control path, precisamente a in packetcapture.cpp (packet_in) devo poter vedere i filtri
+//TODO: impostare i filtri da linea di comando, riceverli e passarli al control path, precisamente in packetcapture.cpp (packet_in) devo poter vedere i filtri
 
 //-2
 //TODO: parsificare il pacchetto e capirne che tipo di pacchetto è per farne il parsing in modo corretto

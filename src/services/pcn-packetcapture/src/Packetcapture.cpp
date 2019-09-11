@@ -52,10 +52,10 @@ Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObje
   if (conf.dumpIsSet()) {
     setDump(conf.getDump());
   }
-
-  auto value = conf.getFilters();
+  */
+  //auto value = conf.getFilters();
   addFilters(conf.getFilters());
-  auto value = conf.getPacket();
+  /*auto value = conf.getPacket();
   addPacket(conf.getPacket());*/
 }
 
@@ -109,11 +109,11 @@ void Packetcapture::setDump(const std::string &value) {
 }
 
 std::shared_ptr<Filters> Packetcapture::getFilters() {
-  throw std::runtime_error("Packetcapture::getFilters: Method not implemented");
+  return filters;
 }
 
 void Packetcapture::addFilters(const FiltersJsonObject &value) {
-  throw std::runtime_error("Packetcapture::addFilters: Method not implemented");
+  filters = std::shared_ptr<Filters>(new Filters(*this, value));
 }
 
 // Basic default implementation, place your extension here (if needed)
@@ -145,3 +145,6 @@ void Packetcapture::delPacket() {
 }
 
 
+void Packetcapture::attach() {
+  logger()->info("attached");
+}
