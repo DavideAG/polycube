@@ -6,15 +6,13 @@
 */
 
 
-// TODO: Modify these methods with your own implementation
-
-
 #include "Filters.h"
 #include "Packetcapture.h"
 
 
 Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
     : FiltersBase(parent) {
+
   if (conf.snaplenIsSet()) {
     setSnaplen(conf.getSnaplen());
   }
@@ -44,51 +42,52 @@ Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
 Filters::~Filters() {}
 
 uint32_t Filters::getSnaplen() {
-  throw std::runtime_error("Filters::getSnaplen: Method not implemented");
+  return snaplen;
 }
 
 void Filters::setSnaplen(const uint32_t &value) {
-  throw std::runtime_error("Filters::setSnaplen: Method not implemented");
+  snaplen = value;
 }
 
 std::string Filters::getSrc() {
-  throw std::runtime_error("Filters::getSrc: Method not implemented");
+  return srcIp;
 }
 
 void Filters::setSrc(const std::string &value) {
-  throw std::runtime_error("Filters::setSrc: Method not implemented");
+  srcIp = value;
 }
 
 std::string Filters::getDst() {
-  throw std::runtime_error("Filters::getDst: Method not implemented");
+  return dstIp;
 }
 
 void Filters::setDst(const std::string &value) {
-  throw std::runtime_error("Filters::setDst: Method not implemented");
+  dstIp = value;
 }
 
 std::string Filters::getL4proto() {
-  throw std::runtime_error("Filters::getL4proto: Method not implemented");
+  return l4proto;
 }
 
 void Filters::setL4proto(const std::string &value) {
-  throw std::runtime_error("Filters::setL4proto: Method not implemented");
+  if((value.compare(std::string("tcp")) == 0) || (value.compare(std::string("udp")) == 0))
+    l4proto = value;
+  else
+    throw std::runtime_error("Bad value at setL4proto. Please enter 'tcp' or 'udp'");
 }
 
 uint16_t Filters::getSport() {
-  throw std::runtime_error("Filters::getSport: Method not implemented");
+  return this->srcPort;
 }
 
 void Filters::setSport(const uint16_t &value) {
-  throw std::runtime_error("Filters::setSport: Method not implemented");
+  srcPort = value;
 }
 
 uint16_t Filters::getDport() {
-  throw std::runtime_error("Filters::getDport: Method not implemented");
+  return dstPort;
 }
 
 void Filters::setDport(const uint16_t &value) {
-  throw std::runtime_error("Filters::setDport: Method not implemented");
+  dstPort = value;
 }
-
-
