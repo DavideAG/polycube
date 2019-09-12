@@ -43,7 +43,6 @@ class Packetcapture : public PacketcaptureBase {
  
  struct packetHeaders *pkt_ptr;
  std::shared_ptr<Filters> filters;
-<<<<<<< HEAD
  std::shared_ptr<Globalheader> global_header;
  std::list<std::shared_ptr<Packet>> packets_captured;
  uint8_t CapStatus;
@@ -52,10 +51,11 @@ class Packetcapture : public PacketcaptureBase {
  std::ofstream myFile;
  std::string dt;
  
+<<<<<<< HEAD
   void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 =======
- 
->>>>>>> Filter class implemented
+  bool filtering(const packetHeaders &pkt_values);
+>>>>>>> Packet filters application
 
  public:
   Packetcapture(const std::string name, const PacketcaptureJsonObject &conf);
@@ -94,7 +94,7 @@ class Packetcapture : public PacketcaptureBase {
   ///
   /// </summary>
   std::shared_ptr<Filters> getFilters() override;
-  void addFilters(const FiltersJsonObject &value) override;   //TODO: devo creare l'istanza filters da packetcapture per inizializzarlo!
+  void addFilters(const FiltersJsonObject &value) override;
   void replaceFilters(const FiltersJsonObject &conf) override;
   void delFilters() override;
 

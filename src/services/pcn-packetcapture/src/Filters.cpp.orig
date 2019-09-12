@@ -14,11 +14,7 @@
 
 
 Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
-<<<<<<< HEAD
     : FiltersBase(parent), set_dstIp(false), set_srcIp(false), set_dstPort(false), set_srcPort(false), set_l4proto(false) {
-=======
-    : FiltersBase(parent) {
->>>>>>> Filter class implemented
 
   if (conf.snaplenIsSet()) {
     setSnaplen(conf.getSnaplen());
@@ -55,12 +51,9 @@ uint32_t Filters::getSnaplen() {
 
 void Filters::setSnaplen(const uint32_t &value) {
   snaplen = value;
-<<<<<<< HEAD
   set_snaplen = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
-=======
->>>>>>> Filter class implemented
 }
 
 std::string Filters::getSrc() {
@@ -68,8 +61,8 @@ std::string Filters::getSrc() {
 }
 
 void Filters::setSrc(const std::string &value) {
+  set_srcIp = true;
   srcIp = value;
-<<<<<<< HEAD
 
   uint32_t ip_src_filter = 0;
   netmaskSrc = (0xFFFFFFFF << (32 - std::stoi(value.substr(value.find("/")+1)))) & 0xFFFFFFFF;
@@ -82,8 +75,6 @@ void Filters::setSrc(const std::string &value) {
   set_srcIp = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
-=======
->>>>>>> Filter class implemented
 }
 
 std::string Filters::getDst() {
@@ -91,8 +82,8 @@ std::string Filters::getDst() {
 }
 
 void Filters::setDst(const std::string &value) {
+  set_dstIp = true;
   dstIp = value;
-<<<<<<< HEAD
 
   uint32_t ip_dst_filter = 0;
   netmaskDst = (0xFFFFFFFF << (32 - std::stoi(value.substr(value.find("/")+1)))) & 0xFFFFFFFF;
@@ -105,8 +96,6 @@ void Filters::setDst(const std::string &value) {
   set_dstIp = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
-=======
->>>>>>> Filter class implemented
 }
 
 std::string Filters::getL4proto() {
@@ -116,16 +105,15 @@ std::string Filters::getL4proto() {
 void Filters::setL4proto(const std::string &value) {
 <<<<<<< HEAD
   if((value.compare(std::string("tcp")) == 0) || (value.compare(std::string("udp")) == 0)){
+=======
+  set_l4proto = true;
+  if((value.compare(std::string("tcp")) == 0) || (value.compare(std::string("udp")) == 0))
+>>>>>>> Packet filters application
     l4proto = value;
     set_l4proto = true;
     if(!bootstrap)
       parent_.updateFiltersMaps();
   }else
-=======
-  if((value.compare(std::string("tcp")) == 0) || (value.compare(std::string("udp")) == 0))
-    l4proto = value;
-  else
->>>>>>> Filter class implemented
     throw std::runtime_error("Bad value at setL4proto. Please enter 'tcp' or 'udp'");
 }
 
@@ -134,13 +122,11 @@ uint16_t Filters::getSport() {
 }
 
 void Filters::setSport(const uint16_t &value) {
+  set_srcPort = true;
   srcPort = value;
-<<<<<<< HEAD
   set_srcPort = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
-=======
->>>>>>> Filter class implemented
 }
 
 uint16_t Filters::getDport() {
@@ -148,8 +134,8 @@ uint16_t Filters::getDport() {
 }
 
 void Filters::setDport(const uint16_t &value) {
+  set_dstPort = true;
   dstPort = value;
-<<<<<<< HEAD
   set_dstPort = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
@@ -170,6 +156,3 @@ uint32_t Filters::getNetmaskFilterSrc(){
 uint32_t Filters::getNetmaskFilterDst(){
   return netmaskDst;
 }
-=======
-}
->>>>>>> Filter class implemented

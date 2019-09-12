@@ -34,11 +34,15 @@ using namespace polycube::service::model;
 
 class Filters : public FiltersBase {
 
-<<<<<<< HEAD
 
+<<<<<<< HEAD
   bool set_srcIp, set_dstIp, set_srcPort, set_dstPort, set_l4proto, set_snaplen;
 
   bool bootstrap = true;
+=======
+  bool set_srcIp, set_dstIp, set_srcPort, set_dstPort, set_l4proto;
+
+>>>>>>> Packet filters application
   std::string srcIp = "0.0.0.0/24";
   std::string dstIp = "0.0.0.0/24";
   uint32_t networkSrc = 0;
@@ -49,17 +53,6 @@ class Filters : public FiltersBase {
   uint16_t dstPort = 0;
   std::string l4proto = "";
   uint32_t snaplen = 262144;   /* 65535 for no sliced packets */
-=======
-  std::string srcIp = "0.0.0.0/24";
-  std::string dstIp = "0.0.0.0/24";
-
-  uint16_t srcPort = 0;
-  uint16_t dstPort = 0;
-
-  std::string l4proto = "";
-
-  uint32_t snaplen = 0;
->>>>>>> Filter class implemented
 
  public:
   Filters(Packetcapture &parent, const FiltersJsonObject &conf);
@@ -105,9 +98,12 @@ class Filters : public FiltersBase {
   uint16_t getDport() override;
   void setDport(const uint16_t &value) override;
   bool dstPort_is_set(){ return set_dstPort; };
+<<<<<<< HEAD
 
   uint32_t getNetworkFilterSrc();
   uint32_t getNetworkFilterDst();
   uint32_t getNetmaskFilterSrc();
   uint32_t getNetmaskFilterDst();
+=======
+>>>>>>> Packet filters application
 };

@@ -40,6 +40,8 @@ struct pcap_pkthdr {
   bpf_u_int32 len;        /* actual length of packet */
 };
 
+
+
 Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObject &conf)
   : TransparentCube(conf.getBase(), { packetcapture_code_ingress }, { packetcapture_code_egress }),
     PacketcaptureBase(name) {
