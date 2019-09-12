@@ -49,8 +49,6 @@ struct packetHeaders {
 BPF_ARRAY(pkt_header, struct packetHeaders, 1);
 
             /*TASKS*/
-//-1
-//TODO: impostare i filtri da linea di comando, riceverli e passarli al control path, precisamente in packetcapture.cpp (packet_in) devo poter vedere i filtri
 
 //-2
 //TODO: parsificare il pacchetto e capirne che tipo di pacchetto è per farne il parsing in modo corretto

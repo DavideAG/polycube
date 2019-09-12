@@ -11,7 +11,7 @@
 
 
 Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
-    : FiltersBase(parent) {
+    : FiltersBase(parent), set_dstIp(false), set_srcIp(false), set_dstPort(false), set_srcPort(false), set_l4proto(false) {
 
   if (conf.snaplenIsSet()) {
     setSnaplen(conf.getSnaplen());
@@ -54,6 +54,7 @@ std::string Filters::getSrc() {
 }
 
 void Filters::setSrc(const std::string &value) {
+  set_srcIp = true;
   srcIp = value;
 }
 
@@ -62,6 +63,7 @@ std::string Filters::getDst() {
 }
 
 void Filters::setDst(const std::string &value) {
+  set_dstIp = true;
   dstIp = value;
 }
 
@@ -70,6 +72,7 @@ std::string Filters::getL4proto() {
 }
 
 void Filters::setL4proto(const std::string &value) {
+  set_l4proto = true;
   if((value.compare(std::string("tcp")) == 0) || (value.compare(std::string("udp")) == 0))
     l4proto = value;
   else
@@ -81,6 +84,7 @@ uint16_t Filters::getSport() {
 }
 
 void Filters::setSport(const uint16_t &value) {
+  set_srcPort = true;
   srcPort = value;
 }
 
@@ -89,5 +93,6 @@ uint16_t Filters::getDport() {
 }
 
 void Filters::setDport(const uint16_t &value) {
+  set_dstPort = true;
   dstPort = value;
 }
