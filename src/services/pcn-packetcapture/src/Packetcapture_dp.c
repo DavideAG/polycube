@@ -24,6 +24,7 @@
 #include <uapi/linux/udp.h>
 
 
+
 struct eth_hdr {
   __be64 dst : 48;
   __be64 src : 48;
@@ -58,6 +59,8 @@ BPF_ARRAY(pkt_header, struct packetHeaders, 1);
 static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
 
 
+  int ret;    //TODO: da rimuovere
+
   int key = 0;
   struct packetHeaders *pkt;
   pkt = pkt_header.lookup(&key);
@@ -88,19 +91,17 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
   struct udphdr *udp = NULL;
   pkt->ip = 0;
 
-
-  u16 reason = 0;
-  u32 metadata[3] = {0, 0, 0};  //that metadata vector is the metadata vector in md.metadata[] in the slowpath
-
-  int ret = pcn_pkt_controller_with_metadata_stack(ctx, md, reason, metadata);
-  /*if (ether_type == bpf_htons(ETH_P_IP)) {
-    ip = data + sizeof(*ethernet);
+  if (ether_type == bpf_htons(ETH_P_IP)) {
+    ip = data + sizeof(*ethernet);  
     if (data + sizeof(*ethernet) + sizeof(*ip) > data_end)
-      return RX_DROP;
+      return RX_DROP;   
+    if((int)ip->version != 4){
+      pcn_log(ctx, LOG_T, "support only ipv4");
+      return RX_OK;
+    }
     pkt->ip = 1;
     pkt->srcIp = ip->saddr;
     pkt->dstIp = ip->daddr;
-
     if (ip->protocol == IPPROTO_TCP) {
       tcp = data + sizeof(*ethernet) + sizeof(*ip);
       if (data + sizeof(*ethernet) + sizeof(*ip) + sizeof(*tcp) > data_end)
@@ -117,14 +118,20 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
       pkt->dstPort = udp->dest;
     }
 
-  }*/
+  }
+  /*u16 reason = 1;
+  return pcn_pkt_controller(ctx, md, reason);*/
 
+  /*u16 reason = 0;
+  u32 metadata[3] = {0, 0, 0};  //that metadata vector is the metadata vector in md.metadata[] in the slowpath
+  
+  ret = pcn_pkt_controller_with_metadata_stack(ctx, md, reason, metadata);*/
   
   /* printing values */
-  pcn_log(ctx, LOG_DEBUG, "--- Packet captured ---");
+  /*pcn_log(ctx, LOG_DEBUG, "--- Packet captured ---");
   pcn_log(ctx, LOG_DEBUG, "valore ritornato dalla pcn_pkt_controller_with_metadata_stack: %d", ret);
   pcn_log(ctx, LOG_DEBUG, "Source Mac: %d", (int)pkt->srcMac);
-  /*pcn_log(ctx, LOG_DEBUG, "Destination Mac: %M", pkt->dstMac);
+  pcn_log(ctx, LOG_DEBUG, "Destination Mac: %M", pkt->dstMac);
   pcn_log(ctx, LOG_DEBUG, "Ethertype: %x", ether_type);
   pcn_log(ctx, LOG_DEBUG, "PacketSize: %d\n", ctx->len);*/
 

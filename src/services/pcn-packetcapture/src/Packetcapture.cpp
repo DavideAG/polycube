@@ -10,6 +10,7 @@
 #include "Packetcapture_dp.h"
 #include <string>
 
+
 typedef int bpf_int32; 
 typedef u_int bpf_u_int32;
 
@@ -36,8 +37,8 @@ struct pcap_file_header {
 
 struct pcap_pkthdr {
   struct timeval ts;  
-  bpf_u_int32 caplen; /* number of octets of packet saved in file */
-  bpf_u_int32 len;    /* actual length of packet */
+  bpf_u_int32 caplen;     /* number of octets of packet saved in file */
+  bpf_u_int32 len;        /* actual length of packet */
 };
 
 
@@ -92,28 +93,41 @@ bool Packetcapture::filtering(const packetHeaders &pkt_values){
   if( (filters->l4proto_is_set()) && (filters->getL4proto().compare(std::string("udp")) == 0) && (pkt_values.l4proto != IPPROTO_UDP) ){
       pass = false;
       goto end;
-    }
+  }
   
-  //TODO: controllo su ip sorgente e ip destinazione
+  uint32_t netmask_filter;
+  uint32_t network_filter, network_packet;
+  //source Ip filter
   if( filters->srcIp_is_set() ){
     uint32_t ip_src_filter = 0;
-    uint32_t netmask_filter = (0xFFFFFFFF << (32 - std::stoi(filters->getSrc().substr(filters->getSrc().find("/")+1)))) & 0xFFFFFFFF;
-    uint32_t network_filter, network_packet;
-  
+    netmask_filter = (0xFFFFFFFF << (32 - std::stoi(filters->getSrc().substr(filters->getSrc().find("/")+1)))) & 0xFFFFFFFF;
     std::string source_ip = filters->getSrc().substr(0, filters->getSrc().find("/"));
-    //TODO: per controllare questo devo prima scrivere l'indirizzo ip dentro la struct packetHeaders. Scrivilo e poi testami.
     inet_pton(AF_INET, source_ip.data(), &ip_src_filter);
-    ip_src_filter = ntohl(ip_src_filter); //todo: Valuta se rimuovere o meno questa riga. controlla se l'indirizzo ip arriva in network order
-    
-    
-    //TODO: da testare da qui in giú
-    logger()->debug("netmask: {0}", netmask_filter);
-    logger()->debug("ip_src_filter: {0}", ip_src_filter);
+    ip_src_filter = ntohl(ip_src_filter);
     network_filter = ip_src_filter & netmask_filter;
-    logger()->debug("indirizzo di rete del filtro: {0}", network_filter);
-
+    network_packet = pkt_values.srcIp & netmask_filter;
+    if( network_filter != network_packet ){
+      pass = false;
+      goto end;
+    }
   }
 
+
+  //TODO: check code
+  //destination Ip filter
+  if( filters->dstIp_is_set() ){
+    uint32_t ip_dst_filter = 0;
+    netmask_filter = (0xFFFFFFFF << (32 - std::stoi(filters->getDst().substr(filters->getDst().find("/")+1)))) & 0xFFFFFFFF;
+    std::string destination_ip = filters->getDst().substr(0, filters->getDst().find("/"));
+    inet_pton(AF_INET, destination_ip.data(), &ip_dst_filter);
+    ip_dst_filter = ntohl(ip_dst_filter);
+    network_filter = ip_dst_filter & netmask_filter;
+    network_packet = pkt_values.srcIp & netmask_filter;
+    if( network_filter != network_packet ){
+      pass = false;
+      goto end;
+    }
+  }
 
 end:
   return pass;
@@ -124,19 +138,17 @@ void Packetcapture::packet_in(polycube::service::Sense sense,
     const std::vector<uint8_t> &packet) {
       
     logger()->debug("Packet received - packet_in. Packet size= {0}", packet.size());
-
-    //ricevuto il pacchetto dal fast path, ricorda che dati reali del pacchetto sono in packet
-    packetHeaders pkt_values = get_array_table<packetHeaders>("pkt_header").get(0x0);
-    
-    //devo prima parsificare e solo poi eventualmente memorizzare
+    packetHeaders pkt_values = get_array_table<packetHeaders>("pkt_header").get(0x0);    
+    Tins::EthernetII pkt(&packet[0], packet.size());
     if( filtering(pkt_values) == true )
     {
+      //addPacket()   //TODO
       logger()->debug("packet stored");
+      send_packet_out(pkt, sense, false);   //***SEGMENTATION FAULT
     }else
     {
       logger()->debug("Packet rejected");
     }
-    
 }
 
 PacketcaptureCaptureEnum Packetcapture::getCapture() {
@@ -194,8 +206,12 @@ std::shared_ptr<Packet> Packetcapture::getPacket() {
 }
 
 void Packetcapture::addPacket(const PacketJsonObject &value) {
-  //throw std::runtime_error("Packetcapture::addPacket: Method not implemented");
+
 }
+
+/*void Packetcapture::addPacket(const PacketJsonObject &value) {
+  //throw std::runtime_error("Packetcapture::addPacket: Method not implemented");
+}*/
 
 // Basic default implementation, place your extension here (if needed)
 void Packetcapture::replacePacket(const PacketJsonObject &conf) {
