@@ -8,11 +8,15 @@
 
 #pragma once
 
+#include <list>
 
 #include "../base/PacketcaptureBase.h"
 
 #include "Filters.h"
 #include "Packet.h"
+
+#include <tins/ethernetII.h>
+#include <tins/tins.h>
 
 
 struct packetHeaders {
@@ -34,6 +38,7 @@ class Packetcapture : public PacketcaptureBase {
  
  struct packetHeaders *pkt_ptr;
  std::shared_ptr<Filters> filters;
+ std::list<Packet> capture;
  
   bool filtering(const packetHeaders &pkt_values);
 
