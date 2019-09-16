@@ -49,17 +49,11 @@ struct packetHeaders {
  */
 BPF_ARRAY(pkt_header, struct packetHeaders, 1);
 
-            /*TASKS*/
-
-//-2
-//TODO: parsificare il pacchetto e capirne che tipo di pacchetto è per farne il parsing in modo corretto
-//TODO: riempire di conseguenza la struct packetHeaders da passare al control path
-
 
 static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
 
 
-  int ret;    //TODO: da rimuovere
+  //int ret;    //TODO: remember to remove
 
   int key = 0;
   struct packetHeaders *pkt;
@@ -119,8 +113,12 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
     }
 
   }
-  /*u16 reason = 1;
-  return pcn_pkt_controller(ctx, md, reason);*/
+  u16 reason = 1;
+  return pcn_pkt_controller(ctx, md, reason);
+
+
+
+  //TODO: remove that
 
   /*u16 reason = 0;
   u32 metadata[3] = {0, 0, 0};  //that metadata vector is the metadata vector in md.metadata[] in the slowpath
@@ -138,6 +136,6 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
   /*pcn_log(ctx, LOG_DEBUG, "Source IP: %I", pkt->srcIp);
   pcn_log(ctx, LOG_DEBUG, "Destination IP: %I\n", pkt->dstIp);*/
   
-  return ret;
+  //return ret;
   //return RX_OK;
 }
