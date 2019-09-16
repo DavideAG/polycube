@@ -9,7 +9,10 @@
 #pragma once
 
 #include <list>
+<<<<<<< HEAD
 #include <fstream>
+=======
+>>>>>>> Report 3 - segmentation fault
 
 #include "../base/PacketcaptureBase.h"
 
@@ -17,6 +20,9 @@
 #include "Packet.h"
 #include "Globalheader.h"
 
+
+#include <tins/ethernetII.h>
+#include <tins/tins.h>
 
 #include <tins/ethernetII.h>
 #include <tins/tins.h>
@@ -43,6 +49,7 @@ class Packetcapture : public PacketcaptureBase {
  
  struct packetHeaders *pkt_ptr;
  std::shared_ptr<Filters> filters;
+<<<<<<< HEAD
  std::shared_ptr<Globalheader> global_header;
  std::list<std::shared_ptr<Packet>> packets_captured;
  uint8_t CapStatus;
@@ -50,12 +57,11 @@ class Packetcapture : public PacketcaptureBase {
  bool writeHeader;
  std::ofstream myFile;
  std::string dt;
- 
-<<<<<<< HEAD
-  void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 =======
-  bool filtering(const packetHeaders &pkt_values);
->>>>>>> Packet filters application
+ std::list<Packet> capture;
+>>>>>>> Report 3 - segmentation fault
+ 
+  void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 
  public:
   Packetcapture(const std::string name, const PacketcaptureJsonObject &conf);
@@ -94,7 +100,7 @@ class Packetcapture : public PacketcaptureBase {
   ///
   /// </summary>
   std::shared_ptr<Filters> getFilters() override;
-  void addFilters(const FiltersJsonObject &value) override;
+  void addFilters(const FiltersJsonObject &value) override;   //TODO: devo creare l'istanza filters da packetcapture per inizializzarlo!
   void replaceFilters(const FiltersJsonObject &conf) override;
   void delFilters() override;
 
