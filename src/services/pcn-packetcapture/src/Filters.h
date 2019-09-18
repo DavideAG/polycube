@@ -19,7 +19,7 @@ using namespace polycube::service::model;
 class Filters : public FiltersBase {
 
 
-  bool set_srcIp, set_dstIp, set_srcPort, set_dstPort, set_l4proto;
+  bool set_srcIp, set_dstIp, set_srcPort, set_dstPort, set_l4proto, set_snaplen;
 
   std::string srcIp = "0.0.0.0/24";
   std::string dstIp = "0.0.0.0/24";
@@ -29,7 +29,7 @@ class Filters : public FiltersBase {
 
   std::string l4proto = "";
 
-  uint32_t snaplen = 0;
+  uint32_t snaplen = 0;   /* 65535 for no sliced packets */
 
  public:
   Filters(Packetcapture &parent, const FiltersJsonObject &conf);

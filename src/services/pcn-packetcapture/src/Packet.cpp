@@ -6,15 +6,12 @@
 */
 
 
-// TODO: Modify these methods with your own implementation
-
-
 #include "Packet.h"
 #include "Packetcapture.h"
 
 
 Packet::Packet(Packetcapture &parent, const PacketJsonObject &conf)
-    : PacketBase(parent) {
+    : PacketBase(parent), capture_len(0), packet_len(0), ts_microsec(0), ts_sec(0) {
   if (conf.capturelenIsSet()) {
     setCapturelen(conf.getCapturelen());
   }
@@ -33,38 +30,39 @@ Packet::Packet(Packetcapture &parent, const PacketJsonObject &conf)
 
 }
 
+
 Packet::~Packet() {}
 
 uint32_t Packet::getCapturelen() {
-  throw std::runtime_error("Packet::getCapturelen: Method not implemented");
+  return this->capture_len;
 }
 
 void Packet::setCapturelen(const uint32_t &value) {
-  throw std::runtime_error("Packet::setCapturelen: Method not implemented");
+  this->capture_len = value;
 }
 
 uint32_t Packet::getPacketlen() {
-  throw std::runtime_error("Packet::getPacketlen: Method not implemented");
+  return this->packet_len;
 }
 
 void Packet::setPacketlen(const uint32_t &value) {
-  throw std::runtime_error("Packet::setPacketlen: Method not implemented");
+  this->packet_len = value;
 }
 
 uint32_t Packet::getTimestampSeconds() {
-  throw std::runtime_error("Packet::getTimestampSeconds: Method not implemented");
+  return this->ts_sec;
 }
 
 void Packet::setTimestampSeconds(const uint32_t &value) {
-  throw std::runtime_error("Packet::setTimestampSeconds: Method not implemented");
+  this->ts_sec = value;
 }
 
 uint32_t Packet::getTimestampMicroseconds() {
-  throw std::runtime_error("Packet::getTimestampMicroseconds: Method not implemented");
+  return this->ts_microsec;
 }
 
 void Packet::setTimestampMicroseconds(const uint32_t &value) {
-  throw std::runtime_error("Packet::setTimestampMicroseconds: Method not implemented");
+  this->ts_microsec = value;
 }
 
 
