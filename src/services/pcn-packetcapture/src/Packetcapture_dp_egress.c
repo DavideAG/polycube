@@ -24,6 +24,10 @@
 #include <uapi/linux/udp.h>
 
 
+enum {
+  ON,
+  OFF,
+};
 
 struct eth_hdr {
   __be64 dst : 48;
@@ -48,14 +52,21 @@ struct packetHeaders {
  * BPF map where a single element, the packet header
  */
 BPF_ARRAY(pkt_header, struct packetHeaders, 1);
+BPF_ARRAY(working, uint8_t, 1);
 
 
 static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
 
+  unsigned int key = 0;
+  uint8_t *status = working.lookup(&key);
+  if(!status){
+      return RX_DROP;
+  }
+  
+  if(*status == OFF){
+      return RX_OK;
+  }
 
-  //int ret;    //TODO: remember to remove
-
-  int key = 0;
   struct packetHeaders *pkt;
   pkt = pkt_header.lookup(&key);
   if (pkt == NULL) {
@@ -116,26 +127,4 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
   u16 reason = 1;
   return pcn_pkt_controller(ctx, md, reason);
 
-
-
-  //TODO: remove that
-
-  /*u16 reason = 0;
-  u32 metadata[3] = {0, 0, 0};  //that metadata vector is the metadata vector in md.metadata[] in the slowpath
-  
-  ret = pcn_pkt_controller_with_metadata_stack(ctx, md, reason, metadata);*/
-  
-  /* printing values */
-  /*pcn_log(ctx, LOG_DEBUG, "--- Packet captured ---");
-  pcn_log(ctx, LOG_DEBUG, "valore ritornato dalla pcn_pkt_controller_with_metadata_stack: %d", ret);
-  pcn_log(ctx, LOG_DEBUG, "Source Mac: %d", (int)pkt->srcMac);
-  pcn_log(ctx, LOG_DEBUG, "Destination Mac: %M", pkt->dstMac);
-  pcn_log(ctx, LOG_DEBUG, "Ethertype: %x", ether_type);
-  pcn_log(ctx, LOG_DEBUG, "PacketSize: %d\n", ctx->len);*/
-
-  /*pcn_log(ctx, LOG_DEBUG, "Source IP: %I", pkt->srcIp);
-  pcn_log(ctx, LOG_DEBUG, "Destination IP: %I\n", pkt->dstIp);*/
-  
-  //return ret;
-  //return RX_OK;
 }

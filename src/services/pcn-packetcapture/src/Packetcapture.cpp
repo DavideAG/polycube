@@ -7,8 +7,13 @@
 
 
 #include "Packetcapture.h"
-#include "Packetcapture_dp.h"
+#include "Packetcapture_dp_ingress.h"
+#include "Packetcapture_dp_egress.h"
 #include <string>
+#include <sys/time.h>
+#define ON_T 0
+#define OFF_T 1
+#define LINKTYPE_ETHERNET 1
 
 
 typedef int bpf_int32; 
@@ -24,7 +29,7 @@ typedef u_int bpf_u_int32;
 /** Linktype
  *  https://linux.die.net/man/7/pcap-linktype */
 
-
+//questo è il global header
 struct pcap_file_header {
   bpf_u_int32 magic;      /* magic number */
   u_short version_major;  /* major version number */
@@ -35,32 +40,23 @@ struct pcap_file_header {
   bpf_u_int32 linktype;   /* data link type */
 };
 
+//questo è il packet header
 struct pcap_pkthdr {
   struct timeval ts;  
   bpf_u_int32 caplen;     /* number of octets of packet saved in file */
   bpf_u_int32 len;        /* actual length of packet */
 };
 
-
+//dopo devo scrivere il packet data
 
 Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObject &conf)
-  : TransparentCube(conf.getBase(), { packetcapture_code }, {}),
+  : TransparentCube(conf.getBase(), { packetcapture_code_ingress }, { packetcapture_code_egress }),
     PacketcaptureBase(name) {
   logger()->info("Creating Packetcapture instance");
-  /*  setCapture(conf.getCapture());
-    setAnomimize(conf.getAnomimize());
-  if (conf.linktypeIsSet()) {
-    setLinktype(conf.getLinktype());
-  }
 
-  if (conf.dumpIsSet()) {
-    setDump(conf.getDump());
-  }
-  */
-  //auto value = conf.getFilters();
   addFilters(conf.getFilters());
-  /*auto value = conf.getPacket();
-  addPacket(conf.getPacket());*/
+  setCapture(conf.getCapture());
+  CapStatus = (uint8_t) conf.getCapture();
 }
 
 
@@ -70,31 +66,26 @@ Packetcapture::~Packetcapture() {
 
 bool Packetcapture::filtering(const packetHeaders &pkt_values){
   bool pass = true;
-
   //source port filter   
   if( filters->srcPort_is_set() && (pkt_values.srcPort != filters->getSport()) ){
     pass = false;
     goto end;
   }
-  
   //destination port filter
   if( filters->dstPort_is_set() && (pkt_values.dstPort != filters->getDport()) ){
     pass = false;
     goto end;
   }
-
   //layer 4 filter - TCP
   if( (filters->l4proto_is_set()) && (filters->getL4proto().compare(std::string("tcp")) == 0) && (pkt_values.l4proto != IPPROTO_TCP) ){
     pass = false;
     goto end;
   }
-
   //layer 4 filter - UDP
   if( (filters->l4proto_is_set()) && (filters->getL4proto().compare(std::string("udp")) == 0) && (pkt_values.l4proto != IPPROTO_UDP) ){
       pass = false;
       goto end;
   }
-  
   uint32_t netmask_filter;
   uint32_t network_filter, network_packet;
   //source Ip filter
@@ -111,8 +102,6 @@ bool Packetcapture::filtering(const packetHeaders &pkt_values){
       goto end;
     }
   }
-
-
   //TODO: check code
   //destination Ip filter
   if( filters->dstIp_is_set() ){
@@ -133,42 +122,90 @@ end:
   return pass;
 };
 
+void Packetcapture::addPacket(const std::vector<uint8_t> &packet,
+    const packetHeaders &pkt_values) {
+    PacketJsonObject pj;
+    auto p = std::shared_ptr<Packet>(new Packet(*this, pj));
+    struct timeval tp;
+    gettimeofday(&tp, NULL);
+    p->setTimestampSeconds((uint32_t) tp.tv_sec);
+    p->setTimestampMicroseconds((uint32_t) tp.tv_usec);
+    p->setPacketlen((uint32_t) packet.size());
+    if(p->getPacketlen() > filters->getSnaplen()){     //TODO: test me!
+      p->setCapturelen(filters->getSnaplen());
+    }else{
+      p->setCapturelen(p->getPacketlen());
+    }
+    packets_captured.push_back(p);
+}
+
 void Packetcapture::packet_in(polycube::service::Sense sense,
     polycube::service::PacketInMetadata &md,
     const std::vector<uint8_t> &packet) {
       
-    logger()->debug("Packet received - packet_in. Packet size= {0}", packet.size());
-    packetHeaders pkt_values = get_array_table<packetHeaders>("pkt_header").get(0x0);    
     Tins::EthernetII pkt(&packet[0], packet.size());
-    if( filtering(pkt_values) == true )
-    {
-      //addPacket()   //TODO
-      logger()->debug("packet stored");
-      send_packet_out(pkt, sense, false);   //***SEGMENTATION FAULT
-    }else
-    {
-      logger()->debug("Packet rejected");
+    packetHeaders pkt_values;
+    
+    switch (sense) {
+      case polycube::service::Sense::INGRESS:
+        pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::INGRESS).get(0x0);
+        if( filtering(pkt_values) == true ){               //TODO: improve performance -> move this to the fast_path
+          addPacket(packet, pkt_values);
+        }
+        break;
+      case polycube::service::Sense::EGRESS:
+        pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::EGRESS).get(0x0);
+        if( filtering(pkt_values) == true ){               //TODO: improve performance -> move this to the fast_path
+          addPacket(packet, pkt_values);
+        }
+        break;
     }
+    send_packet_out(pkt, sense, false);
 }
 
 PacketcaptureCaptureEnum Packetcapture::getCapture() {
-  //throw std::runtime_error("Packetcapture::getCapture: Method not implemented");
+  return static_cast<PacketcaptureCaptureEnum>(CapStatus);
 }
 
 void Packetcapture::setCapture(const PacketcaptureCaptureEnum &value) {
-  //throw std::runtime_error("Packetcapture::setCapture: Method not implemented");
+
+  auto t_in = get_array_table<uint8_t>("working", 0, ProgramType::INGRESS);
+  auto t_out = get_array_table<uint8_t>("working", 0, ProgramType::EGRESS);
+
+  switch(value){
+    case PacketcaptureCaptureEnum::INGRESS:
+      t_in.set(0x0, ON_T);
+      t_out.set(0x0, OFF_T);
+      CapStatus = 0;
+    break;
+    case PacketcaptureCaptureEnum::EGRESS:
+      t_in.set(0x0, OFF_T);
+      t_out.set(0x0, ON_T);
+      CapStatus = 1;
+    break;
+    case PacketcaptureCaptureEnum::BIDIRECTIONAL:
+      t_in.set(0x0, ON_T);
+      t_out.set(0x0, ON_T);
+      CapStatus = 2;
+    break;
+    case PacketcaptureCaptureEnum::OFF:
+      t_in.set(0x0, OFF_T);
+      t_out.set(0x0, OFF_T);
+      CapStatus = 3;
+    break;
+  }
 }
 
 bool Packetcapture::getAnomimize() {
-  //throw std::runtime_error("Packetcapture::getAnomimize: Method not implemented");
+  //TODO
 }
 
 void Packetcapture::setAnomimize(const bool &value) {
-  //throw std::runtime_error("Packetcapture::setAnomimize: Method not implemented");
+  //TODO
 }
 
 uint32_t Packetcapture::getLinktype() {
-  //throw std::runtime_error("Packetcapture::getLinktype: Method not implemented");
+  return LINKTYPE_ETHERNET;
 }
 
 void Packetcapture::setLinktype(const uint32_t &value) {
@@ -176,11 +213,28 @@ void Packetcapture::setLinktype(const uint32_t &value) {
 }
 
 std::string Packetcapture::getDump() {
-  //throw std::runtime_error("Packetcapture::getDump: Method not implemented");
+   std::string dump;
+  struct pcap_file_header *pcap_header = new struct pcap_file_header;
+  pcap_header->magic = 0xa1b2c3d4;
+  pcap_header->version_major = 2;
+  pcap_header->version_minor = 4;
+  pcap_header->thiszone = 0;   //timestamp are always in GMT
+  pcap_header->sigfigs = 0;
+  pcap_header->snaplen = filters->getSnaplen();
+  pcap_header->linktype = this->getLinktype();
+
+  dump += std::to_string(pcap_header->magic);
+  dump += std::to_string(pcap_header->version_major);
+  dump += std::to_string(pcap_header->version_minor);
+  dump += std::to_string(pcap_header->thiszone);
+  dump += std::to_string(pcap_header->sigfigs);
+  dump += std::to_string((unsigned)pcap_header->snaplen); //TODO CHECK IT!
+  //dump += std::to_string(pcap_header->linktype);
+  return dump;
 }
 
 void Packetcapture::setDump(const std::string &value) {
-  //throw std::runtime_error("Packetcapture::setDump: Method not implemented");
+  //nop
 }
 
 std::shared_ptr<Filters> Packetcapture::getFilters() {
@@ -206,23 +260,23 @@ std::shared_ptr<Packet> Packetcapture::getPacket() {
 }
 
 void Packetcapture::addPacket(const PacketJsonObject &value) {
-
+  //see addPacket on top
 }
 
-/*void Packetcapture::addPacket(const PacketJsonObject &value) {
-  //throw std::runtime_error("Packetcapture::addPacket: Method not implemented");
-}*/
-
-// Basic default implementation, place your extension here (if needed)
 void Packetcapture::replacePacket(const PacketJsonObject &conf) {
-  // call default implementation in base class
   PacketcaptureBase::replacePacket(conf);
 }
 
 void Packetcapture::delPacket() {
-  //throw std::runtime_error("Packetcapture::delPacket: method not implemented");
+  //not implemented
 }
 
 void Packetcapture::attach() {
   logger()->info("attached");
+  try {
+    std::string parent_peer = get_parent_parameter("peer");
+    logger()->info("parent peer is: {}", parent_peer);
+  } catch (const std::exception &e) {
+    logger()->warn("Error getting parent parameter: {}", e.what());
+  }
 }
