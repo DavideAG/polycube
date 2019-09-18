@@ -9,10 +9,7 @@
 #pragma once
 
 #include <list>
-<<<<<<< HEAD
 #include <fstream>
-=======
->>>>>>> Report 3 - segmentation fault
 
 #include "../base/PacketcaptureBase.h"
 
@@ -23,10 +20,6 @@
 
 #include <tins/ethernetII.h>
 #include <tins/tins.h>
-
-#include <tins/ethernetII.h>
-#include <tins/tins.h>
-
 
 struct packetHeaders {
   uint64_t srcMac;
@@ -57,10 +50,13 @@ class Packetcapture : public PacketcaptureBase {
  bool writeHeader;
  std::ofstream myFile;
  std::string dt;
-=======
- std::list<Packet> capture;
->>>>>>> Report 3 - segmentation fault
  
+=======
+ std::list<std::shared_ptr<Packet>> packets_captured;
+ uint8_t CapStatus;
+ 
+  bool filtering(const packetHeaders &pkt_values);
+>>>>>>> Major update
   void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 
  public:
