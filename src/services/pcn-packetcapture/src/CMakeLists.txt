@@ -12,7 +12,7 @@ if (NOT DEFINED POLYCUBE_STANDALONE_SERVICE OR POLYCUBE_STANDALONE_SERVICE)
   include_directories(${POLYCUBE_INCLUDE_DIRS})
 endif(NOT DEFINED POLYCUBE_STANDALONE_SERVICE OR POLYCUBE_STANDALONE_SERVICE)
 
-# Needed to load files as variables
+# Needed to load files as variable
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(pcn-packetcapture SHARED
@@ -26,8 +26,11 @@ add_library(pcn-packetcapture SHARED
 
 # load ebpf datapath code a variable
 load_file_as_variable(pcn-packetcapture
-  Packetcapture_dp.c
-  packetcapture_code)
+  Packetcapture_dp_ingress.c
+  packetcapture_code_ingress)
+load_file_as_variable(pcn-packetcapture
+  Packetcapture_dp_egress.c
+  packetcapture_code_egress)  
 
 # load datamodel in a variable
 load_file_as_variable(pcn-packetcapture

@@ -18,7 +18,6 @@
 #include <tins/ethernetII.h>
 #include <tins/tins.h>
 
-
 struct packetHeaders {
   uint64_t srcMac;
   uint64_t dstMac;
@@ -33,14 +32,18 @@ struct packetHeaders {
 };
 
 using namespace polycube::service::model;
+using polycube::service::ProgramType;
+using polycube::service::Sense;
 
 class Packetcapture : public PacketcaptureBase {
  
  struct packetHeaders *pkt_ptr;
  std::shared_ptr<Filters> filters;
- std::list<Packet> capture;
+ std::list<std::shared_ptr<Packet>> packets_captured;
+ uint8_t CapStatus;
  
   bool filtering(const packetHeaders &pkt_values);
+  void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 
  public:
   Packetcapture(const std::string name, const PacketcaptureJsonObject &conf);
