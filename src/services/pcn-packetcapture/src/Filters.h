@@ -29,7 +29,7 @@ class Filters : public FiltersBase {
 
   std::string l4proto = "";
 
-  uint32_t snaplen = 0;   /* 65535 for no sliced packets */
+  uint32_t snaplen = 262144;   /* 65535 for no sliced packets */
 
  public:
   Filters(Packetcapture &parent, const FiltersJsonObject &conf);

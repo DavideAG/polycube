@@ -50,4 +50,7 @@ class Packet : public PacketBase {
   /// </summary>
   uint32_t getTimestampMicroseconds() override;
   void setTimestampMicroseconds(const uint32_t &value) override;
+
+  void setRawPacketData(const std::vector<uint8_t> &input);
+  std::vector<uint8_t> getRawPacketData();
 };
