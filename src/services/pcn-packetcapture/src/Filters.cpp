@@ -11,7 +11,7 @@
 
 
 Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
-    : FiltersBase(parent), set_dstIp(false), set_srcIp(false), set_dstPort(false), set_srcPort(false), set_l4proto(false), snaplen(65535) {
+    : FiltersBase(parent), set_dstIp(false), set_srcIp(false), set_dstPort(false), set_srcPort(false), set_l4proto(false) {
 
   if (conf.snaplenIsSet()) {
     setSnaplen(conf.getSnaplen());
@@ -37,6 +37,7 @@ Filters::Filters(Packetcapture &parent, const FiltersJsonObject &conf)
     setDport(conf.getDport());
   }
 
+  snaplen = 262144;
 }
 
 Filters::~Filters() {}
