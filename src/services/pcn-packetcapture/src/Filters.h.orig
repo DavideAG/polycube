@@ -48,11 +48,10 @@ class Filters : public FiltersBase {
   uint16_t dstPort = 0;
   std::string l4proto = "";
 <<<<<<< HEAD
-  uint32_t snaplen = 262144;   /* 65535 for no sliced packets */
 =======
 
-  uint32_t snaplen = 0;   /* 65535 for no sliced packets */
->>>>>>> Major update
+>>>>>>> GetDump Implemented
+  uint32_t snaplen = 262144;   /* 65535 for no sliced packets */
 
  public:
   Filters(Packetcapture &parent, const FiltersJsonObject &conf);

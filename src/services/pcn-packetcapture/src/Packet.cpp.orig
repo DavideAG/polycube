@@ -6,7 +6,6 @@
 */
 
 
-<<<<<<< HEAD
 #include "Packet.h"
 #include "Packetcapture.h"
 #include <locale>
@@ -16,17 +15,6 @@
 
 Packet::Packet(Packetcapture &parent, const PacketJsonObject &conf)
     : PacketBase(parent), capture_len(0), packet_len(0), ts_microsec(0), ts_sec(0) {
-=======
-// TODO: Modify these methods with your own implementation
-
-
-#include "Packet.h"
-#include "Packetcapture.h"
-
-
-Packet::Packet(Packetcapture &parent, const PacketJsonObject &conf)
-    : PacketBase(parent) {
->>>>>>> Data model and packetcapture stub created
   if (conf.capturelenIsSet()) {
     setCapturelen(conf.getCapturelen());
   }
@@ -45,7 +33,6 @@ Packet::Packet(Packetcapture &parent, const PacketJsonObject &conf)
 
 }
 
-<<<<<<< HEAD
 
 Packet::~Packet() {}
 
@@ -88,6 +75,7 @@ void Packet::setRawPacketData(const std::vector<uint8_t> &input){
 std::vector<uint8_t> Packet::getRawPacketData(){
   return this->packet;
 }
+<<<<<<< HEAD
 
 std::string ascii_to_utf8(const std::vector<uint8_t> &packet){
   std::string ret("");
@@ -102,6 +90,8 @@ std::string ascii_to_utf8(const std::vector<uint8_t> &packet){
       ret.push_back((ch & 0x3F) | 0x80);
     }
   }
+=======
+>>>>>>> GetDump Implemented
 
   return ret;
 }
@@ -113,40 +103,3 @@ std::string Packet::getRawdata() {
 void Packet::setRawdata(const std::string &value) {
   throw std::runtime_error("Packet::setRawdata: Method not implemented");
 }
-=======
-Packet::~Packet() {}
-
-uint32_t Packet::getCapturelen() {
-  throw std::runtime_error("Packet::getCapturelen: Method not implemented");
-}
-
-void Packet::setCapturelen(const uint32_t &value) {
-  throw std::runtime_error("Packet::setCapturelen: Method not implemented");
-}
-
-uint32_t Packet::getPacketlen() {
-  throw std::runtime_error("Packet::getPacketlen: Method not implemented");
-}
-
-void Packet::setPacketlen(const uint32_t &value) {
-  throw std::runtime_error("Packet::setPacketlen: Method not implemented");
-}
-
-uint32_t Packet::getTimestampSeconds() {
-  throw std::runtime_error("Packet::getTimestampSeconds: Method not implemented");
-}
-
-void Packet::setTimestampSeconds(const uint32_t &value) {
-  throw std::runtime_error("Packet::setTimestampSeconds: Method not implemented");
-}
-
-uint32_t Packet::getTimestampMicroseconds() {
-  throw std::runtime_error("Packet::getTimestampMicroseconds: Method not implemented");
-}
-
-void Packet::setTimestampMicroseconds(const uint32_t &value) {
-  throw std::runtime_error("Packet::setTimestampMicroseconds: Method not implemented");
-}
-
-
->>>>>>> Data model and packetcapture stub created

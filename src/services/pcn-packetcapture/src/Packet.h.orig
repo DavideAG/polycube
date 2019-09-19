@@ -17,10 +17,6 @@ using namespace polycube::service::model;
 
 class Packet : public PacketBase {
 
-<<<<<<< HEAD
-=======
-  std::vector<uint8_t> packet;
->>>>>>> Major update
   uint32_t ts_microsec;
   uint32_t ts_sec;
   uint32_t packet_len;
@@ -57,10 +53,13 @@ class Packet : public PacketBase {
 
   void setRawPacketData(const std::vector<uint8_t> &input);
   std::vector<uint8_t> getRawPacketData();
+<<<<<<< HEAD
 
   /// <summary>
   /// packet raw data
   /// </summary>
   std::string getRawdata() override;
   void setRawdata(const std::string &value) override;
+=======
+>>>>>>> GetDump Implemented
 };
