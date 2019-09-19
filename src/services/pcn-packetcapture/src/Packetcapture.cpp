@@ -11,6 +11,9 @@
 #include "Packetcapture_dp_egress.h"
 #include <string>
 #include <sys/time.h>
+#include <iomanip>
+#include <iostream>
+#include <fstream>
 #define ON_T 0
 #define OFF_T 1
 #define LINKTYPE_ETHERNET 1
@@ -42,7 +45,9 @@ struct pcap_file_header {
 
 //questo è il packet header
 struct pcap_pkthdr {
-  struct timeval ts;  
+  //struct timeval ts;
+  bpf_u_int32 ts_sec;
+  bpf_u_int32 ts_usec;  
   bpf_u_int32 caplen;     /* number of octets of packet saved in file */
   bpf_u_int32 len;        /* actual length of packet */
 };
@@ -136,6 +141,7 @@ void Packetcapture::addPacket(const std::vector<uint8_t> &packet,
     }else{
       p->setCapturelen(p->getPacketlen());
     }
+    p->setRawPacketData(packet);
     packets_captured.push_back(p);
 }
 
@@ -213,24 +219,81 @@ void Packetcapture::setLinktype(const uint32_t &value) {
 }
 
 std::string Packetcapture::getDump() {
-   std::string dump;
-  struct pcap_file_header *pcap_header = new struct pcap_file_header;
-  pcap_header->magic = 0xa1b2c3d4;
-  pcap_header->version_major = 2;
-  pcap_header->version_minor = 4;
-  pcap_header->thiszone = 0;   //timestamp are always in GMT
-  pcap_header->sigfigs = 0;
-  pcap_header->snaplen = filters->getSnaplen();
-  pcap_header->linktype = this->getLinktype();
+  std::stringstream dump;
 
-  dump += std::to_string(pcap_header->magic);
-  dump += std::to_string(pcap_header->version_major);
-  dump += std::to_string(pcap_header->version_minor);
-  dump += std::to_string(pcap_header->thiszone);
-  dump += std::to_string(pcap_header->sigfigs);
-  dump += std::to_string((unsigned)pcap_header->snaplen); //TODO CHECK IT!
-  //dump += std::to_string(pcap_header->linktype);
-  return dump;
+  std::ofstream myFile;
+
+
+  if(!packets_captured.empty()){
+    dump << std::internal << std::setfill('0');
+
+    /* fill of the pcap_file_header struct can be omitted */
+    struct pcap_file_header *pcap_header = new struct pcap_file_header;
+    pcap_header->magic = 0xa1b2c3d4;
+    pcap_header->version_major = 2;
+    pcap_header->version_minor = 4;
+    pcap_header->thiszone = 0;   //timestamp are always in GMT
+    pcap_header->sigfigs = 0;
+    pcap_header->snaplen = filters->getSnaplen();
+    pcap_header->linktype = this->getLinktype();
+
+    dump << std::hex << std::setw(8) << pcap_header->magic;
+    dump << std::hex << std::setw(4) << pcap_header->version_major;
+    dump << std::hex << std::setw(4) << pcap_header->version_minor;
+    dump << std::hex << std::setw(8) << pcap_header->thiszone;
+    dump << std::hex << std::setw(8) << pcap_header->sigfigs;
+    dump << std::hex << std::setw(8) << pcap_header->snaplen;
+    dump << std::hex << std::setw(8) << pcap_header->linktype;
+
+    myFile.open("capture.pcap", std::ios::binary);
+    myFile.write(reinterpret_cast<const char*>(pcap_header), sizeof(*pcap_header));
+
+    for(auto it = packets_captured.begin(); it != packets_captured.end(); it++){
+      std::shared_ptr<Packet> p = *it;
+      // fill of the pcap_pkthdr struct can be omitted
+      struct pcap_pkthdr *pkt_hdr = new struct pcap_pkthdr;
+      pkt_hdr->ts_sec = p->getTimestampSeconds();
+      pkt_hdr->ts_usec = p->getTimestampMicroseconds();
+      pkt_hdr->len = p->getPacketlen();
+      pkt_hdr->caplen = p->getCapturelen();
+      
+      /*dump << std::hex << std::setw(8) << pkt_hdr->len;
+      dump << std::hex << std::setw(8) << pkt_hdr->caplen;
+      dump << std::hex << std::setw(sizeof(pkt_hdr->ts_sec)) << pkt_hdr->ts_sec;
+      dump << std::hex << std::setw(sizeof(pkt_hdr->ts_usec)) << pkt_hdr->ts_usec;
+
+      std::for_each(p->getRawPacketData().begin(), p->getRawPacketData().end(), [&dump](uint8_t val){ dump << std::hex << val; });*/
+      
+      myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
+      myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), p->getRawPacketData().size());
+    }
+      
+      /*std::shared_ptr<Packet> p = *packets_captured.begin();
+      struct pcap_pkthdr *pkt_hdr = new struct pcap_pkthdr;
+
+      pkt_hdr->ts_sec = p->getTimestampSeconds();
+      pkt_hdr->ts_usec = p->getTimestampMicroseconds();
+      pkt_hdr->len = p->getPacketlen();
+      pkt_hdr->caplen = p->getCapturelen();
+
+      logger()->debug("lunghezza del pacchetto in pkt_hdr {0}", pkt_hdr->len);
+      logger()->debug("lunghezza pacchetto con size {0}", p->getRawPacketData().size());
+
+      myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
+      myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), p->getRawPacketData().size());*/
+
+    myFile.close();
+  }
+
+  /*myFile.open("~/Desktop/packetcapture.pcap", std::ios::out | std::ios::binary);
+  std::string str = dump.str();
+  std::vector<char> writable_ptr(str.begin(), str.end());
+  writable_ptr.push_back('\0');
+  myFile.write(&writable_ptr[0], str.size());
+  myFile << std::dec;
+  myFile.close();*/
+
+  return dump.str();
 }
 
 void Packetcapture::setDump(const std::string &value) {

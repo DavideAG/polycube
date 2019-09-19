@@ -65,4 +65,11 @@ void Packet::setTimestampMicroseconds(const uint32_t &value) {
   this->ts_microsec = value;
 }
 
+void Packet::setRawPacketData(const std::vector<uint8_t> &input){
+  this->packet = input;
+}
+
+std::vector<uint8_t> Packet::getRawPacketData(){
+  return this->packet;
+}
 
