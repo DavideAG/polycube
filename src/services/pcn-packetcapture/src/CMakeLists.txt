@@ -12,7 +12,7 @@ if (NOT DEFINED POLYCUBE_STANDALONE_SERVICE OR POLYCUBE_STANDALONE_SERVICE)
   include_directories(${POLYCUBE_INCLUDE_DIRS})
 endif(NOT DEFINED POLYCUBE_STANDALONE_SERVICE OR POLYCUBE_STANDALONE_SERVICE)
 
-# Needed to load files as variable
+# Needed to load files as variables
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(pcn-packetcapture SHARED
@@ -20,6 +20,7 @@ add_library(pcn-packetcapture SHARED
   ${API_SOURCES}
   ${BASE_SOURCES}
   Filters.cpp
+  Globalheader.cpp
   Packet.cpp
   Packetcapture.cpp
   Packetcapture-lib.cpp)
@@ -30,7 +31,7 @@ load_file_as_variable(pcn-packetcapture
   packetcapture_code_ingress)
 load_file_as_variable(pcn-packetcapture
   Packetcapture_dp_egress.c
-  packetcapture_code_egress)  
+  packetcapture_code_egress) 
 
 # load datamodel in a variable
 load_file_as_variable(pcn-packetcapture

@@ -58,6 +58,25 @@ Response create_packetcapture_filters_by_id_handler(
   }
 }
 
+Response create_packetcapture_globalheader_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // Getting the body param
+    GlobalheaderJsonObject unique_value { request_body };
+
+    create_packetcapture_globalheader_by_id(unique_name, unique_value);
+    return { kCreated, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
 Response create_packetcapture_packet_by_id_handler(
   const char *name, const Key *keys,
   size_t num_keys ,
@@ -99,6 +118,20 @@ Response delete_packetcapture_filters_by_id_handler(
 
   try {
     delete_packetcapture_filters_by_id(unique_name);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response delete_packetcapture_globalheader_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    delete_packetcapture_globalheader_by_id(unique_name);
     return { kOk, nullptr };
   } catch(const std::exception &e) {
     return { kGenericError, ::strdup(e.what()) };
@@ -306,7 +339,7 @@ Response read_packetcapture_filters_src_by_id_handler(
   }
 }
 
-Response read_packetcapture_linktype_by_id_handler(
+Response read_packetcapture_globalheader_by_id_handler(
   const char *name, const Key *keys,
   size_t num_keys ) {
   // Getting the path params
@@ -314,7 +347,126 @@ Response read_packetcapture_linktype_by_id_handler(
 
   try {
 
-    auto x = read_packetcapture_linktype_by_id(unique_name);
+    auto x = read_packetcapture_globalheader_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x.toJson();
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_globalheader_linktype_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_globalheader_linktype_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_globalheader_magic_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_globalheader_magic_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_globalheader_sigfigs_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_globalheader_sigfigs_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_globalheader_snaplen_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_globalheader_snaplen_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_globalheader_thiszone_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_globalheader_thiszone_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_globalheader_version_major_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_globalheader_version_major_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_globalheader_version_minor_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_globalheader_version_minor_by_id(unique_name);
     nlohmann::json response_body;
     response_body = x;
     return { kOk, ::strdup(response_body.dump().c_str()) };
@@ -335,6 +487,23 @@ Response read_packetcapture_list_by_id_handler(
     for (auto &i : x) {
       response_body += i.toJson();
     }
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_networkmode_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_networkmode_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
     return { kOk, ::strdup(response_body.dump().c_str()) };
   } catch(const std::exception &e) {
     return { kGenericError, ::strdup(e.what()) };
@@ -384,6 +553,23 @@ Response read_packetcapture_packet_packetlen_by_id_handler(
   try {
 
     auto x = read_packetcapture_packet_packetlen_by_id(unique_name);
+    nlohmann::json response_body;
+    response_body = x;
+    return { kOk, ::strdup(response_body.dump().c_str()) };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response read_packetcapture_packet_rawdata_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+
+    auto x = read_packetcapture_packet_rawdata_by_id(unique_name);
     nlohmann::json response_body;
     response_body = x;
     return { kOk, ::strdup(response_body.dump().c_str()) };
@@ -459,6 +645,25 @@ Response replace_packetcapture_filters_by_id_handler(
     FiltersJsonObject unique_value { request_body };
 
     replace_packetcapture_filters_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response replace_packetcapture_globalheader_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // Getting the body param
+    GlobalheaderJsonObject unique_value { request_body };
+
+    replace_packetcapture_globalheader_by_id(unique_name, unique_value);
     return { kOk, nullptr };
   } catch(const std::exception &e) {
     return { kGenericError, ::strdup(e.what()) };
@@ -684,7 +889,26 @@ Response update_packetcapture_filters_src_by_id_handler(
   }
 }
 
-Response update_packetcapture_linktype_by_id_handler(
+Response update_packetcapture_globalheader_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // Getting the body param
+    GlobalheaderJsonObject unique_value { request_body };
+
+    update_packetcapture_globalheader_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_globalheader_linktype_by_id_handler(
   const char *name, const Key *keys,
   size_t num_keys ,
   const char *value) {
@@ -695,7 +919,115 @@ Response update_packetcapture_linktype_by_id_handler(
     auto request_body = nlohmann::json::parse(std::string { value });
     // The conversion is done automatically by the json library
     uint32_t unique_value = request_body;
-    update_packetcapture_linktype_by_id(unique_name, unique_value);
+    update_packetcapture_globalheader_linktype_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_globalheader_magic_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    uint32_t unique_value = request_body;
+    update_packetcapture_globalheader_magic_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_globalheader_sigfigs_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    uint32_t unique_value = request_body;
+    update_packetcapture_globalheader_sigfigs_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_globalheader_snaplen_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    uint32_t unique_value = request_body;
+    update_packetcapture_globalheader_snaplen_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_globalheader_thiszone_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    int32_t unique_value = request_body;
+    update_packetcapture_globalheader_thiszone_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_globalheader_version_major_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    uint16_t unique_value = request_body;
+    update_packetcapture_globalheader_version_major_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_globalheader_version_minor_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    uint16_t unique_value = request_body;
+    update_packetcapture_globalheader_version_minor_by_id(unique_name, unique_value);
     return { kOk, nullptr };
   } catch(const std::exception &e) {
     return { kGenericError, ::strdup(e.what()) };
@@ -719,6 +1051,24 @@ Response update_packetcapture_list_by_id_handler(
       unique_value.push_back(a);
     }
     update_packetcapture_list_by_id(unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_networkmode_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    bool unique_value = request_body;
+    update_packetcapture_networkmode_by_id(unique_name, unique_value);
     return { kOk, nullptr };
   } catch(const std::exception &e) {
     return { kGenericError, ::strdup(e.what()) };
@@ -774,6 +1124,24 @@ Response update_packetcapture_packet_packetlen_by_id_handler(
     // The conversion is done automatically by the json library
     uint32_t unique_value = request_body;
     update_packetcapture_packet_packetlen_by_id(unique_name, unique_value);
+    return { kOk, nullptr };
+  } catch(const std::exception &e) {
+    return { kGenericError, ::strdup(e.what()) };
+  }
+}
+
+Response update_packetcapture_packet_rawdata_by_id_handler(
+  const char *name, const Key *keys,
+  size_t num_keys ,
+  const char *value) {
+  // Getting the path params
+  std::string unique_name { name };
+
+  try {
+    auto request_body = nlohmann::json::parse(std::string { value });
+    // The conversion is done automatically by the json library
+    std::string unique_value = request_body;
+    update_packetcapture_packet_rawdata_by_id(unique_name, unique_value);
     return { kOk, nullptr };
   } catch(const std::exception &e) {
     return { kGenericError, ::strdup(e.what()) };

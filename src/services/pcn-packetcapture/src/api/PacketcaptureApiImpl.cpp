@@ -104,6 +104,24 @@ create_packetcapture_filters_by_id(const std::string &name, const FiltersJsonObj
 }
 
 /**
+* @brief   Create globalheader by ID
+*
+* Create operation of resource: globalheader*
+*
+* @param[in] name ID of name
+* @param[in] value globalheaderbody object
+*
+* Responses:
+*
+*/
+void
+create_packetcapture_globalheader_by_id(const std::string &name, const GlobalheaderJsonObject &value) {
+  auto packetcapture = get_cube(name);
+
+  return packetcapture->addGlobalheader(value);
+}
+
+/**
 * @brief   Create packet by ID
 *
 * Create operation of resource: packet*
@@ -136,6 +154,23 @@ delete_packetcapture_filters_by_id(const std::string &name) {
   auto packetcapture = get_cube(name);
 
   return packetcapture->delFilters();
+}
+
+/**
+* @brief   Delete globalheader by ID
+*
+* Delete operation of resource: globalheader*
+*
+* @param[in] name ID of name
+*
+* Responses:
+*
+*/
+void
+delete_packetcapture_globalheader_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+
+  return packetcapture->delGlobalheader();
 }
 
 /**
@@ -348,6 +383,23 @@ read_packetcapture_filters_src_by_id(const std::string &name) {
 }
 
 /**
+* @brief   Read globalheader by ID
+*
+* Read operation of resource: globalheader*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* GlobalheaderJsonObject
+*/
+GlobalheaderJsonObject
+read_packetcapture_globalheader_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  return packetcapture->getGlobalheader()->toJsonObject();
+
+}
+
+/**
 * @brief   Read linktype by ID
 *
 * Read operation of resource: linktype*
@@ -358,9 +410,135 @@ read_packetcapture_filters_src_by_id(const std::string &name) {
 * uint32_t
 */
 uint32_t
-read_packetcapture_linktype_by_id(const std::string &name) {
+read_packetcapture_globalheader_linktype_by_id(const std::string &name) {
   auto packetcapture = get_cube(name);
-  return packetcapture->getLinktype();
+  auto globalheader = packetcapture->getGlobalheader();
+  return globalheader->getLinktype();
+
+}
+
+/**
+* @brief   Read magic by ID
+*
+* Read operation of resource: magic*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* uint32_t
+*/
+uint32_t
+read_packetcapture_globalheader_magic_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+  return globalheader->getMagic();
+
+}
+
+/**
+* @brief   Read sigfigs by ID
+*
+* Read operation of resource: sigfigs*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* uint32_t
+*/
+uint32_t
+read_packetcapture_globalheader_sigfigs_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+  return globalheader->getSigfigs();
+
+}
+
+/**
+* @brief   Read snaplen by ID
+*
+* Read operation of resource: snaplen*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* uint32_t
+*/
+uint32_t
+read_packetcapture_globalheader_snaplen_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+  return globalheader->getSnaplen();
+
+}
+
+/**
+* @brief   Read thiszone by ID
+*
+* Read operation of resource: thiszone*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* int32_t
+*/
+int32_t
+read_packetcapture_globalheader_thiszone_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+  return globalheader->getThiszone();
+
+}
+
+/**
+* @brief   Read version_major by ID
+*
+* Read operation of resource: version_major*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* uint16_t
+*/
+uint16_t
+read_packetcapture_globalheader_version_major_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+  return globalheader->getVersionMajor();
+
+}
+
+/**
+* @brief   Read version_minor by ID
+*
+* Read operation of resource: version_minor*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* uint16_t
+*/
+uint16_t
+read_packetcapture_globalheader_version_minor_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+  return globalheader->getVersionMinor();
+
+}
+
+/**
+* @brief   Read networkmode by ID
+*
+* Read operation of resource: networkmode*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* bool
+*/
+bool
+read_packetcapture_networkmode_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  return packetcapture->getNetworkmode();
 
 }
 
@@ -418,6 +596,24 @@ read_packetcapture_packet_packetlen_by_id(const std::string &name) {
 }
 
 /**
+* @brief   Read rawdata by ID
+*
+* Read operation of resource: rawdata*
+*
+* @param[in] name ID of name
+*
+* Responses:
+* std::string
+*/
+std::string
+read_packetcapture_packet_rawdata_by_id(const std::string &name) {
+  auto packetcapture = get_cube(name);
+  auto packet = packetcapture->getPacket();
+  return packet->getRawdata();
+
+}
+
+/**
 * @brief   Read timestamp-microseconds by ID
 *
 * Read operation of resource: timestamp-microseconds*
@@ -469,6 +665,24 @@ replace_packetcapture_filters_by_id(const std::string &name, const FiltersJsonOb
   auto packetcapture = get_cube(name);
 
   return packetcapture->replaceFilters(value);
+}
+
+/**
+* @brief   Replace globalheader by ID
+*
+* Replace operation of resource: globalheader*
+*
+* @param[in] name ID of name
+* @param[in] value globalheaderbody object
+*
+* Responses:
+*
+*/
+void
+replace_packetcapture_globalheader_by_id(const std::string &name, const GlobalheaderJsonObject &value) {
+  auto packetcapture = get_cube(name);
+
+  return packetcapture->replaceGlobalheader(value);
 }
 
 /**
@@ -695,6 +909,25 @@ update_packetcapture_filters_src_by_id(const std::string &name, const std::strin
 }
 
 /**
+* @brief   Update globalheader by ID
+*
+* Update operation of resource: globalheader*
+*
+* @param[in] name ID of name
+* @param[in] value globalheaderbody object
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_globalheader_by_id(const std::string &name, const GlobalheaderJsonObject &value) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+
+  return globalheader->update(value);
+}
+
+/**
 * @brief   Update linktype by ID
 *
 * Update operation of resource: linktype*
@@ -706,10 +939,125 @@ update_packetcapture_filters_src_by_id(const std::string &name, const std::strin
 *
 */
 void
-update_packetcapture_linktype_by_id(const std::string &name, const uint32_t &value) {
+update_packetcapture_globalheader_linktype_by_id(const std::string &name, const uint32_t &value) {
   auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
 
-  return packetcapture->setLinktype(value);
+  return globalheader->setLinktype(value);
+}
+
+/**
+* @brief   Update magic by ID
+*
+* Update operation of resource: magic*
+*
+* @param[in] name ID of name
+* @param[in] value magic number
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_globalheader_magic_by_id(const std::string &name, const uint32_t &value) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+
+  return globalheader->setMagic(value);
+}
+
+/**
+* @brief   Update sigfigs by ID
+*
+* Update operation of resource: sigfigs*
+*
+* @param[in] name ID of name
+* @param[in] value accuracy of timestamps
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_globalheader_sigfigs_by_id(const std::string &name, const uint32_t &value) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+
+  return globalheader->setSigfigs(value);
+}
+
+/**
+* @brief   Update snaplen by ID
+*
+* Update operation of resource: snaplen*
+*
+* @param[in] name ID of name
+* @param[in] value max length of captured packets, in octets
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_globalheader_snaplen_by_id(const std::string &name, const uint32_t &value) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+
+  return globalheader->setSnaplen(value);
+}
+
+/**
+* @brief   Update thiszone by ID
+*
+* Update operation of resource: thiszone*
+*
+* @param[in] name ID of name
+* @param[in] value GMT to local correction
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_globalheader_thiszone_by_id(const std::string &name, const int32_t &value) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+
+  return globalheader->setThiszone(value);
+}
+
+/**
+* @brief   Update version_major by ID
+*
+* Update operation of resource: version_major*
+*
+* @param[in] name ID of name
+* @param[in] value major version number
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_globalheader_version_major_by_id(const std::string &name, const uint16_t &value) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+
+  return globalheader->setVersionMajor(value);
+}
+
+/**
+* @brief   Update version_minor by ID
+*
+* Update operation of resource: version_minor*
+*
+* @param[in] name ID of name
+* @param[in] value minor version number
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_globalheader_version_minor_by_id(const std::string &name, const uint16_t &value) {
+  auto packetcapture = get_cube(name);
+  auto globalheader = packetcapture->getGlobalheader();
+
+  return globalheader->setVersionMinor(value);
 }
 
 /**
@@ -725,6 +1073,24 @@ update_packetcapture_linktype_by_id(const std::string &name, const uint32_t &val
 void
 update_packetcapture_list_by_id(const std::vector<PacketcaptureJsonObject> &value) {
   throw std::runtime_error("Method not supported");
+}
+
+/**
+* @brief   Update networkmode by ID
+*
+* Update operation of resource: networkmode*
+*
+* @param[in] name ID of name
+* @param[in] value operative mode
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_networkmode_by_id(const std::string &name, const bool &value) {
+  auto packetcapture = get_cube(name);
+
+  return packetcapture->setNetworkmode(value);
 }
 
 /**
@@ -782,6 +1148,25 @@ update_packetcapture_packet_packetlen_by_id(const std::string &name, const uint3
   auto packet = packetcapture->getPacket();
 
   return packet->setPacketlen(value);
+}
+
+/**
+* @brief   Update rawdata by ID
+*
+* Update operation of resource: rawdata*
+*
+* @param[in] name ID of name
+* @param[in] value packet raw data
+*
+* Responses:
+*
+*/
+void
+update_packetcapture_packet_rawdata_by_id(const std::string &name, const std::string &value) {
+  auto packetcapture = get_cube(name);
+  auto packet = packetcapture->getPacket();
+
+  return packet->setRawdata(value);
 }
 
 /**

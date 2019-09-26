@@ -22,6 +22,7 @@ PacketJsonObject::PacketJsonObject() {
   m_packetlenIsSet = false;
   m_timestampSecondsIsSet = false;
   m_timestampMicrosecondsIsSet = false;
+  m_rawdataIsSet = false;
 }
 
 PacketJsonObject::PacketJsonObject(const nlohmann::json &val) :
@@ -30,6 +31,7 @@ PacketJsonObject::PacketJsonObject(const nlohmann::json &val) :
   m_packetlenIsSet = false;
   m_timestampSecondsIsSet = false;
   m_timestampMicrosecondsIsSet = false;
+  m_rawdataIsSet = false;
 
 
   if (val.count("capturelen")) {
@@ -46,6 +48,10 @@ PacketJsonObject::PacketJsonObject(const nlohmann::json &val) :
 
   if (val.count("timestamp-microseconds")) {
     setTimestampMicroseconds(val.at("timestamp-microseconds").get<uint32_t>());
+  }
+
+  if (val.count("rawdata")) {
+    setRawdata(val.at("rawdata").get<std::string>());
   }
 }
 
@@ -69,6 +75,10 @@ nlohmann::json PacketJsonObject::toJson() const {
 
   if (m_timestampMicrosecondsIsSet) {
     val["timestamp-microseconds"] = m_timestampMicroseconds;
+  }
+
+  if (m_rawdataIsSet) {
+    val["rawdata"] = m_rawdata;
   }
 
   return val;
@@ -140,6 +150,23 @@ bool PacketJsonObject::timestampMicrosecondsIsSet() const {
 
 void PacketJsonObject::unsetTimestampMicroseconds() {
   m_timestampMicrosecondsIsSet = false;
+}
+
+std::string PacketJsonObject::getRawdata() const {
+  return m_rawdata;
+}
+
+void PacketJsonObject::setRawdata(std::string value) {
+  m_rawdata = value;
+  m_rawdataIsSet = true;
+}
+
+bool PacketJsonObject::rawdataIsSet() const {
+  return m_rawdataIsSet;
+}
+
+void PacketJsonObject::unsetRawdata() {
+  m_rawdataIsSet = false;
 }
 
 
