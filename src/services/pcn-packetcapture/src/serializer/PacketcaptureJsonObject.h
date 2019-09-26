@@ -20,6 +20,7 @@
 #include "JsonObjectBase.h"
 
 #include "FiltersJsonObject.h"
+#include "GlobalheaderJsonObject.h"
 #include "PacketJsonObject.h"
 #include "polycube/services/cube.h"
 
@@ -68,14 +69,6 @@ public:
   void unsetAnomimize();
 
   /// <summary>
-  /// Capture linktype (eg. ethernet, wifi..)
-  /// </summary>
-  uint32_t getLinktype() const;
-  void setLinktype(uint32_t value);
-  bool linktypeIsSet() const;
-  void unsetLinktype();
-
-  /// <summary>
   /// dump capture
   /// </summary>
   std::string getDump() const;
@@ -84,12 +77,28 @@ public:
   void unsetDump();
 
   /// <summary>
+  /// operative mode
+  /// </summary>
+  bool getNetworkmode() const;
+  void setNetworkmode(bool value);
+  bool networkmodeIsSet() const;
+  void unsetNetworkmode();
+
+  /// <summary>
   ///
   /// </summary>
   FiltersJsonObject getFilters() const;
   void setFilters(FiltersJsonObject value);
   bool filtersIsSet() const;
   void unsetFilters();
+
+  /// <summary>
+  ///
+  /// </summary>
+  GlobalheaderJsonObject getGlobalheader() const;
+  void setGlobalheader(GlobalheaderJsonObject value);
+  bool globalheaderIsSet() const;
+  void unsetGlobalheader();
 
   /// <summary>
   ///
@@ -106,12 +115,14 @@ private:
   bool m_captureIsSet;
   bool m_anomimize;
   bool m_anomimizeIsSet;
-  uint32_t m_linktype;
-  bool m_linktypeIsSet;
   std::string m_dump;
   bool m_dumpIsSet;
+  bool m_networkmode;
+  bool m_networkmodeIsSet;
   FiltersJsonObject m_filters;
   bool m_filtersIsSet;
+  GlobalheaderJsonObject m_globalheader;
+  bool m_globalheaderIsSet;
   PacketJsonObject m_packet;
   bool m_packetIsSet;
 };

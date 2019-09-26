@@ -19,6 +19,7 @@
 #include "../serializer/PacketcaptureJsonObject.h"
 
 #include "../Filters.h"
+#include "../Globalheader.h"
 #include "../Packet.h"
 
 #include "polycube/services/transparent_cube.h"
@@ -54,16 +55,16 @@ class PacketcaptureBase: public virtual polycube::service::TransparentCube {
   virtual void setAnomimize(const bool &value) = 0;
 
   /// <summary>
-  /// Capture linktype (eg. ethernet, wifi..)
-  /// </summary>
-  virtual uint32_t getLinktype() = 0;
-  virtual void setLinktype(const uint32_t &value) = 0;
-
-  /// <summary>
   /// dump capture
   /// </summary>
   virtual std::string getDump() = 0;
   virtual void setDump(const std::string &value) = 0;
+
+  /// <summary>
+  /// operative mode
+  /// </summary>
+  virtual bool getNetworkmode() = 0;
+  virtual void setNetworkmode(const bool &value) = 0;
 
   /// <summary>
   ///
@@ -72,6 +73,14 @@ class PacketcaptureBase: public virtual polycube::service::TransparentCube {
   virtual void addFilters(const FiltersJsonObject &value) = 0;
   virtual void replaceFilters(const FiltersJsonObject &conf);
   virtual void delFilters() = 0;
+
+  /// <summary>
+  ///
+  /// </summary>
+  virtual std::shared_ptr<Globalheader> getGlobalheader() = 0;
+  virtual void addGlobalheader(const GlobalheaderJsonObject &value) = 0;
+  virtual void replaceGlobalheader(const GlobalheaderJsonObject &conf);
+  virtual void delGlobalheader() = 0;
 
   /// <summary>
   ///

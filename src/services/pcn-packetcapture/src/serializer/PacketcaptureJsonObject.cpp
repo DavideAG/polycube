@@ -23,9 +23,11 @@ PacketcaptureJsonObject::PacketcaptureJsonObject() {
   m_captureIsSet = true;
   m_anomimize = false;
   m_anomimizeIsSet = true;
-  m_linktypeIsSet = false;
   m_dumpIsSet = false;
+  m_networkmode = false;
+  m_networkmodeIsSet = true;
   m_filtersIsSet = false;
+  m_globalheaderIsSet = false;
   m_packetIsSet = false;
 }
 
@@ -34,9 +36,10 @@ PacketcaptureJsonObject::PacketcaptureJsonObject(const nlohmann::json &val) :
   m_nameIsSet = false;
   m_captureIsSet = false;
   m_anomimizeIsSet = false;
-  m_linktypeIsSet = false;
   m_dumpIsSet = false;
+  m_networkmodeIsSet = false;
   m_filtersIsSet = false;
+  m_globalheaderIsSet = false;
   m_packetIsSet = false;
 
 
@@ -52,18 +55,25 @@ PacketcaptureJsonObject::PacketcaptureJsonObject(const nlohmann::json &val) :
     setAnomimize(val.at("anomimize").get<bool>());
   }
 
-  if (val.count("linktype")) {
-    setLinktype(val.at("linktype").get<uint32_t>());
-  }
-
   if (val.count("dump")) {
     setDump(val.at("dump").get<std::string>());
+  }
+
+  if (val.count("networkmode")) {
+    setNetworkmode(val.at("networkmode").get<bool>());
   }
 
   if (val.count("filters")) {
     if (!val["filters"].is_null()) {
       FiltersJsonObject newItem { val["filters"] };
       setFilters(newItem);
+    }
+  }
+
+  if (val.count("globalheader")) {
+    if (!val["globalheader"].is_null()) {
+      GlobalheaderJsonObject newItem { val["globalheader"] };
+      setGlobalheader(newItem);
     }
   }
 
@@ -93,16 +103,20 @@ nlohmann::json PacketcaptureJsonObject::toJson() const {
     val["anomimize"] = m_anomimize;
   }
 
-  if (m_linktypeIsSet) {
-    val["linktype"] = m_linktype;
-  }
-
   if (m_dumpIsSet) {
     val["dump"] = m_dump;
   }
 
+  if (m_networkmodeIsSet) {
+    val["networkmode"] = m_networkmode;
+  }
+
   if (m_filtersIsSet) {
     val["filters"] = JsonObjectBase::toJson(m_filters);
+  }
+
+  if (m_globalheaderIsSet) {
+    val["globalheader"] = JsonObjectBase::toJson(m_globalheader);
   }
 
   if (m_packetIsSet) {
@@ -187,23 +201,6 @@ void PacketcaptureJsonObject::unsetAnomimize() {
   m_anomimizeIsSet = false;
 }
 
-uint32_t PacketcaptureJsonObject::getLinktype() const {
-  return m_linktype;
-}
-
-void PacketcaptureJsonObject::setLinktype(uint32_t value) {
-  m_linktype = value;
-  m_linktypeIsSet = true;
-}
-
-bool PacketcaptureJsonObject::linktypeIsSet() const {
-  return m_linktypeIsSet;
-}
-
-void PacketcaptureJsonObject::unsetLinktype() {
-  m_linktypeIsSet = false;
-}
-
 std::string PacketcaptureJsonObject::getDump() const {
   return m_dump;
 }
@@ -221,6 +218,23 @@ void PacketcaptureJsonObject::unsetDump() {
   m_dumpIsSet = false;
 }
 
+bool PacketcaptureJsonObject::getNetworkmode() const {
+  return m_networkmode;
+}
+
+void PacketcaptureJsonObject::setNetworkmode(bool value) {
+  m_networkmode = value;
+  m_networkmodeIsSet = true;
+}
+
+bool PacketcaptureJsonObject::networkmodeIsSet() const {
+  return m_networkmodeIsSet;
+}
+
+void PacketcaptureJsonObject::unsetNetworkmode() {
+  m_networkmodeIsSet = false;
+}
+
 FiltersJsonObject PacketcaptureJsonObject::getFilters() const {
   return m_filters;
 }
@@ -236,6 +250,23 @@ bool PacketcaptureJsonObject::filtersIsSet() const {
 
 void PacketcaptureJsonObject::unsetFilters() {
   m_filtersIsSet = false;
+}
+
+GlobalheaderJsonObject PacketcaptureJsonObject::getGlobalheader() const {
+  return m_globalheader;
+}
+
+void PacketcaptureJsonObject::setGlobalheader(GlobalheaderJsonObject value) {
+  m_globalheader = value;
+  m_globalheaderIsSet = true;
+}
+
+bool PacketcaptureJsonObject::globalheaderIsSet() const {
+  return m_globalheaderIsSet;
+}
+
+void PacketcaptureJsonObject::unsetGlobalheader() {
+  m_globalheaderIsSet = false;
 }
 
 PacketJsonObject PacketcaptureJsonObject::getPacket() const {

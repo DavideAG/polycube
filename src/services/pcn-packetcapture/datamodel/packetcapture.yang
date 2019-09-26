@@ -35,20 +35,21 @@ module packetcapture {
      default false;
   }
  
-  leaf linktype {
-    type uint32;
-    description "Capture linktype (eg. ethernet, wifi..)";
-  }
- 
   leaf dump {
     type string;
     description "dump capture";
   }
  
+  leaf networkmode {
+    type boolean;
+    default false;
+    description "operative mode";
+  }
+
   container filters {
     leaf snaplen {
       type uint32;
-      default 68;
+      default 262144;
       description "Snapshot length";
     }
  
@@ -78,6 +79,45 @@ module packetcapture {
     }    
   }
 
+  container globalheader {
+    description "global header info";
+
+    leaf magic {
+     type uint32;
+     description "magic number";
+    }
+ 
+    leaf version_major {
+     type uint16;
+     description "major version number";
+    }
+ 
+    leaf version_minor {
+     type uint16;
+     description "minor version number";
+    }
+ 
+    leaf thiszone {
+     type int32;
+     description "GMT to local correction";
+    }
+
+    leaf sigfigs {
+     type uint32;
+     description "accuracy of timestamps";
+    }
+
+    leaf snaplen {
+     type uint32;
+     description "max length of captured packets, in octets";
+    }
+
+    leaf linktype {
+     type uint32;
+     description "Capture linktype (eg. ethernet, wifi..)";
+    }
+  }
+
   container packet {
     description "packet info";
 
@@ -100,6 +140,11 @@ module packetcapture {
     leaf timestamp-microseconds {
      type uint32;
      description "timestamp - microseconds";
+    }
+
+    leaf rawdata {
+     type string;
+     description "packet raw data";
     }
   }
 }
