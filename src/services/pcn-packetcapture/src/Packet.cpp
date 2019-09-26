@@ -8,6 +8,9 @@
 
 #include "Packet.h"
 #include "Packetcapture.h"
+#include <locale>
+#include <codecvt>
+#include <string>
 
 
 Packet::Packet(Packetcapture &parent, const PacketJsonObject &conf)
@@ -72,4 +75,30 @@ void Packet::setRawPacketData(const std::vector<uint8_t> &input){
 std::vector<uint8_t> Packet::getRawPacketData(){
   return this->packet;
 }
+
+std::string ascii_to_utf8(const std::vector<uint8_t> &packet){
+  std::string ret("");
+  char ch;
+
+  for(int i = 0 ; i < packet.size(); i++){
+    if(packet[i] < 128){
+      ret.push_back((char) packet[i]);
+    }else{
+      ch = (char) packet[i];
+      ret.push_back((char)((packet[i] >> 6) | 0xC0));
+      ret.push_back((ch & 0x3F) | 0x80);
+    }
+  }
+
+  return ret;
+}
+
+std::string Packet::getRawdata() {
+  return ascii_to_utf8(packet);
+}
+
+void Packet::setRawdata(const std::string &value) {
+  throw std::runtime_error("Packet::setRawdata: Method not implemented");
+}
+
 

@@ -68,6 +68,14 @@ public:
   bool timestampMicrosecondsIsSet() const;
   void unsetTimestampMicroseconds();
 
+  /// <summary>
+  /// packet raw data
+  /// </summary>
+  std::string getRawdata() const;
+  void setRawdata(std::string value);
+  bool rawdataIsSet() const;
+  void unsetRawdata();
+
 private:
   uint32_t m_capturelen;
   bool m_capturelenIsSet;
@@ -77,6 +85,8 @@ private:
   bool m_timestampSecondsIsSet;
   uint32_t m_timestampMicroseconds;
   bool m_timestampMicrosecondsIsSet;
+  std::string m_rawdata;
+  bool m_rawdataIsSet;
 };
 
 }

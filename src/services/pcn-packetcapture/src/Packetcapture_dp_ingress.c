@@ -23,6 +23,21 @@
 #include <uapi/linux/tcp.h>
 #include <uapi/linux/udp.h>
 
+ struct filters_table {
+  bool network_filter_src_flag;
+  uint32_t network_filter_src;
+  uint32_t netmask_filter_src;
+  bool network_filter_dst_flag;
+  uint32_t network_filter_dst;
+  uint32_t netmask_filter_dst;
+  bool src_port_flag;
+  uint16_t src_port_filter;
+  bool dst_port_flag;
+  uint16_t dst_port_filter;
+  bool l4proto_flag;
+  int l4proto_filter;   /* if l4proto_filter = 1 is TCP only else if l4proto_filter = 2 is UDP only */
+  uint32_t snaplen;
+};
 
 enum {
   ON,
@@ -52,7 +67,16 @@ struct packetHeaders {
  * BPF map where a single element, the packet header
  */
 BPF_ARRAY(pkt_header, struct packetHeaders, 1);
+
+/*
+ * BPF map where a single element, working mode [ON | OFF]
+ */
 BPF_ARRAY(working, uint8_t, 1);
+
+/*
+ * BPF map where a single element, the filters map
+ */
+BPF_ARRAY(filters_map, struct filters_table, 1);
 
 
 static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *md) {
@@ -66,16 +90,15 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
   if(*status == OFF){
       return RX_OK;
   }
-
   struct packetHeaders *pkt;
   pkt = pkt_header.lookup(&key);
   if (pkt == NULL) {
     return RX_DROP;
   }
   
-  /* Parsing L2 */                                  //ctx->len == packet.size() in the slow path. We have all data
-  void *data = (void *)(long)ctx->data;             //start pointer
-  void *data_end = (void *)(long)ctx->data_end;     //end pointer
+  /* Parsing L2 */
+  void *data = (void *)(long)ctx->data;
+  void *data_end = (void *)(long)ctx->data_end;
   struct eth_hdr *ethernet = data;
   if (data + sizeof(*ethernet) > data_end)
     return RX_DROP;
@@ -95,15 +118,39 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
   struct tcphdr *tcp = NULL;
   struct udphdr *udp = NULL;
   pkt->ip = 0;
-
   if (ether_type == bpf_htons(ETH_P_IP)) {
     ip = data + sizeof(*ethernet);  
     if (data + sizeof(*ethernet) + sizeof(*ip) > data_end)
       return RX_DROP;   
     if((int)ip->version != 4){
-      pcn_log(ctx, LOG_T, "support only ipv4");
       return RX_OK;
     }
+
+    struct filters_table *filters_tab;
+    filters_tab = filters_map.lookup(&key);
+    if (filters_tab == NULL) {
+      return RX_DROP;
+    }
+    
+    /* Souce Ip filter */
+    if((filters_tab->network_filter_src_flag == true) && ((filters_tab->netmask_filter_src & ntohl(ip->saddr)) != filters_tab->network_filter_src)){
+      return RX_OK;
+    }
+      
+    /* Destination Ip filter */
+    if((filters_tab->network_filter_dst_flag == true) && ((filters_tab->netmask_filter_dst & ntohl(ip->daddr)) != filters_tab->network_filter_dst)){
+      return RX_OK;
+    }
+
+    /* l4proto Filter */
+    if(filters_tab->l4proto_flag == true){
+      if((filters_tab->l4proto_filter == 1) && (ip->protocol != IPPROTO_TCP)){         /* tcp only */
+        return RX_OK;
+      }else if((filters_tab->l4proto_filter == 2) && (ip->protocol != IPPROTO_UDP)){   /* udp only */
+        return RX_OK;
+      }
+    }
+
     pkt->ip = 1;
     pkt->srcIp = ip->saddr;
     pkt->dstIp = ip->daddr;
@@ -112,6 +159,17 @@ static __always_inline int handle_rx(struct CTXTYPE *ctx, struct pkt_metadata *m
       if (data + sizeof(*ethernet) + sizeof(*ip) + sizeof(*tcp) > data_end)
         return RX_DROP;
       pkt->l4proto = IPPROTO_TCP;
+      
+      /* src port filter */
+      if((filters_tab->src_port_flag == true) && (filters_tab->src_port_filter != ntohs(tcp->source))){
+        return RX_OK;
+      }
+
+      /* dst port filter */
+      if((filters_tab->dst_port_flag == true) && (filters_tab->dst_port_filter != ntohs(tcp->dest))){
+        return RX_OK;
+      }
+
       pkt->srcPort = tcp->source;
       pkt->dstPort = tcp->dest;
     } else if (ip->protocol == IPPROTO_UDP) {

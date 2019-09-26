@@ -32,6 +32,9 @@ void PacketBase::update(const PacketJsonObject &conf) {
   if (conf.timestampMicrosecondsIsSet()) {
     setTimestampMicroseconds(conf.getTimestampMicroseconds());
   }
+  if (conf.rawdataIsSet()) {
+    setRawdata(conf.getRawdata());
+  }
 }
 
 PacketJsonObject PacketBase::toJsonObject() {
@@ -41,6 +44,7 @@ PacketJsonObject PacketBase::toJsonObject() {
   conf.setPacketlen(getPacketlen());
   conf.setTimestampSeconds(getTimestampSeconds());
   conf.setTimestampMicroseconds(getTimestampMicroseconds());
+  conf.setRawdata(getRawdata());
 
   return conf;
 }

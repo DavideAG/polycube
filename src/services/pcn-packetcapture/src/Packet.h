@@ -53,4 +53,10 @@ class Packet : public PacketBase {
 
   void setRawPacketData(const std::vector<uint8_t> &input);
   std::vector<uint8_t> getRawPacketData();
+
+  /// <summary>
+  /// packet raw data
+  /// </summary>
+  std::string getRawdata() override;
+  void setRawdata(const std::string &value) override;
 };
