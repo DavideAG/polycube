@@ -50,7 +50,6 @@ uint32_t Filters::getSnaplen() {
 }
 
 void Filters::setSnaplen(const uint32_t &value) {
-  set_snaplen = true;
   snaplen = value;
   set_snaplen = true;
   if(!bootstrap)
@@ -62,7 +61,6 @@ std::string Filters::getSrc() {
 }
 
 void Filters::setSrc(const std::string &value) {
-  set_srcIp = true;
   srcIp = value;
 
   uint32_t ip_src_filter = 0;
@@ -83,7 +81,6 @@ std::string Filters::getDst() {
 }
 
 void Filters::setDst(const std::string &value) {
-  set_dstIp = true;
   dstIp = value;
 
   uint32_t ip_dst_filter = 0;
@@ -118,7 +115,6 @@ uint16_t Filters::getSport() {
 }
 
 void Filters::setSport(const uint16_t &value) {
-  set_srcPort = true;
   srcPort = value;
   set_srcPort = true;
   if(!bootstrap)
@@ -130,7 +126,6 @@ uint16_t Filters::getDport() {
 }
 
 void Filters::setDport(const uint16_t &value) {
-  set_dstPort = true;
   dstPort = value;
   set_dstPort = true;
   if(!bootstrap)

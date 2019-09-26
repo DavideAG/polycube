@@ -75,7 +75,6 @@ void Packet::setRawPacketData(const std::vector<uint8_t> &input){
 std::vector<uint8_t> Packet::getRawPacketData(){
   return this->packet;
 }
-<<<<<<< HEAD
 
 std::string ascii_to_utf8(const std::vector<uint8_t> &packet){
   std::string ret("");
@@ -90,8 +89,6 @@ std::string ascii_to_utf8(const std::vector<uint8_t> &packet){
       ret.push_back((ch & 0x3F) | 0x80);
     }
   }
-=======
->>>>>>> GetDump Implemented
 
   return ret;
 }
@@ -103,3 +100,8 @@ std::string Packet::getRawdata() {
 void Packet::setRawdata(const std::string &value) {
   throw std::runtime_error("Packet::setRawdata: Method not implemented");
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> Filters | yang | ascii to utf8
