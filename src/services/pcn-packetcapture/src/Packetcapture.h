@@ -14,6 +14,8 @@
 
 #include "Filters.h"
 #include "Packet.h"
+#include "Globalheader.h"
+
 
 #include <tins/ethernetII.h>
 #include <tins/tins.h>
@@ -39,10 +41,11 @@ class Packetcapture : public PacketcaptureBase {
  
  struct packetHeaders *pkt_ptr;
  std::shared_ptr<Filters> filters;
+ std::shared_ptr<Globalheader> global_header;
  std::list<std::shared_ptr<Packet>> packets_captured;
  uint8_t CapStatus;
+ bool network_mode_flag;
  
-  bool filtering(const packetHeaders &pkt_values);
   void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 
  public:
@@ -68,16 +71,15 @@ class Packetcapture : public PacketcaptureBase {
   void setAnomimize(const bool &value) override;
 
   /// <summary>
-  /// Capture linktype (eg. ethernet, wifi..)
-  /// </summary>
-  uint32_t getLinktype() override;
-  void setLinktype(const uint32_t &value) override;
-
-  /// <summary>
   /// dump capture
   /// </summary>
   std::string getDump() override;
   void setDump(const std::string &value) override;
+  /// <summary>
+  /// operative mode
+  /// </summary>
+  bool getNetworkmode() override;
+  void setNetworkmode(const bool &value) override;
 
   /// <summary>
   ///
@@ -94,4 +96,14 @@ class Packetcapture : public PacketcaptureBase {
   void addPacket(const PacketJsonObject &value) override;
   void replacePacket(const PacketJsonObject &conf) override;
   void delPacket() override;
+
+  /// <summary>
+  ///
+  /// </summary>
+  std::shared_ptr<Globalheader> getGlobalheader() override;
+  void addGlobalheader(const GlobalheaderJsonObject &value) override;
+  void replaceGlobalheader(const GlobalheaderJsonObject &conf) override;
+  void delGlobalheader() override;
+
+  void updateFiltersMaps();
 };

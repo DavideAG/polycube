@@ -62,6 +62,12 @@ class PacketBase {
   virtual uint32_t getTimestampMicroseconds() = 0;
   virtual void setTimestampMicroseconds(const uint32_t &value) = 0;
 
+  /// <summary>
+  /// packet raw data
+  /// </summary>
+  virtual std::string getRawdata() = 0;
+  virtual void setRawdata(const std::string &value) = 0;
+
   std::shared_ptr<spdlog::logger> logger();
  protected:
   Packetcapture &parent_;

@@ -28,15 +28,19 @@ void PacketcaptureBase::update(const PacketcaptureJsonObject &conf) {
   if (conf.anomimizeIsSet()) {
     setAnomimize(conf.getAnomimize());
   }
-  if (conf.linktypeIsSet()) {
-    setLinktype(conf.getLinktype());
-  }
   if (conf.dumpIsSet()) {
     setDump(conf.getDump());
+  }
+  if (conf.networkmodeIsSet()) {
+    setNetworkmode(conf.getNetworkmode());
   }
   if (conf.filtersIsSet()) {
     auto m = getFilters();
     m->update(conf.getFilters());
+  }
+  if (conf.globalheaderIsSet()) {
+    auto m = getGlobalheader();
+    m->update(conf.getGlobalheader());
   }
   if (conf.packetIsSet()) {
     auto m = getPacket();
@@ -51,9 +55,10 @@ PacketcaptureJsonObject PacketcaptureBase::toJsonObject() {
   conf.setName(getName());
   conf.setCapture(getCapture());
   conf.setAnomimize(getAnomimize());
-  conf.setLinktype(getLinktype());
   conf.setDump(getDump());
+  conf.setNetworkmode(getNetworkmode());
   conf.setFilters(getFilters()->toJsonObject());
+  conf.setGlobalheader(getGlobalheader()->toJsonObject());
   conf.setPacket(getPacket()->toJsonObject());
 
   return conf;
@@ -63,6 +68,12 @@ void PacketcaptureBase::replaceFilters(const FiltersJsonObject &conf) {
   // TODO: This is a basic default implementation, maybe you want to improve it
   delFilters();
   addFilters(conf);
+}
+
+void PacketcaptureBase::replaceGlobalheader(const GlobalheaderJsonObject &conf) {
+  // TODO: This is a basic default implementation, maybe you want to improve it
+  delGlobalheader();
+  addGlobalheader(conf);
 }
 
 void PacketcaptureBase::replacePacket(const PacketJsonObject &conf) {

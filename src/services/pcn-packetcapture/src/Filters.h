@@ -12,6 +12,22 @@
 #include "../base/FiltersBase.h"
 
 
+ struct filters_table {
+  bool network_filter_src_flag;
+  uint32_t network_filter_src;
+  uint32_t netmask_filter_src;
+  bool network_filter_dst_flag;
+  uint32_t network_filter_dst;
+  uint32_t netmask_filter_dst;
+  bool src_port_flag;
+  uint16_t src_port_filter;
+  bool dst_port_flag;
+  uint16_t dst_port_filter;
+  bool l4proto_flag;
+  int l4proto_filter;   /* if l4proto_filter = 1 is TCP only else if l4proto_filter = 2 is UDP only */
+  uint32_t snaplen;
+};
+
 class Packetcapture;
 
 using namespace polycube::service::model;
@@ -21,14 +37,16 @@ class Filters : public FiltersBase {
 
   bool set_srcIp, set_dstIp, set_srcPort, set_dstPort, set_l4proto, set_snaplen;
 
+  bool bootstrap = true;
   std::string srcIp = "0.0.0.0/24";
   std::string dstIp = "0.0.0.0/24";
-
+  uint32_t networkSrc = 0;
+  uint32_t networkDst = 0;
+  uint32_t netmaskSrc = 0;
+  uint32_t netmaskDst = 0;
   uint16_t srcPort = 0;
   uint16_t dstPort = 0;
-
   std::string l4proto = "";
-
   uint32_t snaplen = 262144;   /* 65535 for no sliced packets */
 
  public:
@@ -75,4 +93,9 @@ class Filters : public FiltersBase {
   uint16_t getDport() override;
   void setDport(const uint16_t &value) override;
   bool dstPort_is_set(){ return set_dstPort; };
+
+  uint32_t getNetworkFilterSrc();
+  uint32_t getNetworkFilterDst();
+  uint32_t getNetmaskFilterSrc();
+  uint32_t getNetmaskFilterDst();
 };
