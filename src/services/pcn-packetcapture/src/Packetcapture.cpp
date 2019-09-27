@@ -62,7 +62,6 @@ Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObje
   ft_init.dst_port_flag = ft_init.src_port_flag = ft_init.network_filter_src_flag = ft_init.network_filter_dst_flag = ft_init.l4proto_flag = false;
   t_filters_in.set(0x0, ft_init);
   t_filters_out.set(0x0, ft_init);
-
 }
 
 
@@ -138,53 +137,39 @@ std::string Packetcapture::getDump() {
   std::ofstream myFile;
 
   if(!packets_captured.empty()){
-    //dump << std::internal << std::setfill('0');
+    if(network_mode_flag){
+      dump << "the service is running in network mode";
+    }else{
+      struct pcap_file_header *pcap_header = new struct pcap_file_header;
+      pcap_header->magic = global_header->getMagic();
+      pcap_header->version_major = global_header->getVersionMajor();
+      pcap_header->version_minor = global_header->getVersionMinor();
+      pcap_header->thiszone = global_header->getThiszone();   //timestamp are always in GMT
+      pcap_header->sigfigs = global_header->getSigfigs();
+      pcap_header->snaplen = filters->getSnaplen();
+      pcap_header->linktype = global_header->getLinktype();
 
-    /* fill of the pcap_file_header struct can be omitted */
-    struct pcap_file_header *pcap_header = new struct pcap_file_header;
-    pcap_header->magic = global_header->getMagic();
-    pcap_header->version_major = global_header->getVersionMajor();
-    pcap_header->version_minor = global_header->getVersionMinor();
-    pcap_header->thiszone = global_header->getThiszone();   //timestamp are always in GMT
-    pcap_header->sigfigs = global_header->getSigfigs();
-    pcap_header->snaplen = filters->getSnaplen();
-    pcap_header->linktype = global_header->getLinktype();
+      myFile.open("capture.pcap", std::ios::binary);
+      myFile.write(reinterpret_cast<const char*>(pcap_header), sizeof(*pcap_header));
 
-    /*dump << std::hex << std::setw(8) << pcap_header->magic;
-    dump << std::hex << std::setw(4) << pcap_header->version_major;
-    dump << std::hex << std::setw(4) << pcap_header->version_minor;
-    dump << std::hex << std::setw(8) << pcap_header->thiszone;
-    dump << std::hex << std::setw(8) << pcap_header->sigfigs;
-    dump << std::hex << std::setw(8) << pcap_header->snaplen;
-    dump << std::hex << std::setw(8) << pcap_header->linktype;*/
+      for(auto it = packets_captured.begin(); it != packets_captured.end(); it++){
+        std::shared_ptr<Packet> p = *it;
+        struct pcap_pkthdr *pkt_hdr = new struct pcap_pkthdr;
+        pkt_hdr->ts_sec = p->getTimestampSeconds();
+        pkt_hdr->ts_usec = p->getTimestampMicroseconds();
+        pkt_hdr->len = p->getPacketlen();
+        pkt_hdr->caplen = p->getCapturelen();
+          
+        myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
+        myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), p->getRawPacketData().size());
+      }
 
-    myFile.open("capture.pcap", std::ios::binary);
-    myFile.write(reinterpret_cast<const char*>(pcap_header), sizeof(*pcap_header));
-
-    for(auto it = packets_captured.begin(); it != packets_captured.end(); it++){
-      std::shared_ptr<Packet> p = *it;
-      // fill of the pcap_pkthdr struct can be omitted
-      struct pcap_pkthdr *pkt_hdr = new struct pcap_pkthdr;
-      pkt_hdr->ts_sec = p->getTimestampSeconds();
-      pkt_hdr->ts_usec = p->getTimestampMicroseconds();
-      pkt_hdr->len = p->getPacketlen();
-      pkt_hdr->caplen = p->getCapturelen();
-      
-      /*dump << std::hex << std::setw(8) << pkt_hdr->len;
-      dump << std::hex << std::setw(8) << pkt_hdr->caplen;
-      dump << std::hex << std::setw(sizeof(pkt_hdr->ts_sec)) << pkt_hdr->ts_sec;
-      dump << std::hex << std::setw(sizeof(pkt_hdr->ts_usec)) << pkt_hdr->ts_usec;
-
-      std::for_each(p->getRawPacketData().begin(), p->getRawPacketData().end(), [&dump](uint8_t val){ dump << std::hex << val; });*/
-      
-      myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
-      myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), p->getRawPacketData().size());
+      myFile.close();
+      char *cwdr_ptr = get_current_dir_name();
+      std::string wdr(cwdr_ptr);
+      dump << "capture dump in " << wdr << "/capture.pcap" << std::endl;
     }
-
-    myFile.close();
-    char *cwdr_ptr = get_current_dir_name();
-    std::string wdr(cwdr_ptr);
-    dump << "capture dump in " << wdr << "/capture.pcap" << std::endl;
+    
   }else{
     dump << "no packets captured";
   }
@@ -224,6 +209,9 @@ void Packetcapture::delFilters() {
 std::shared_ptr<Packet> Packetcapture::getPacket() {
   if(packets_captured.size() != 0){
     auto p = packets_captured.front();
+    if(network_mode_flag){                            /* pop this element */
+      packets_captured.erase(packets_captured.begin());
+    }
     return p;
   }
   PacketJsonObject pj;
