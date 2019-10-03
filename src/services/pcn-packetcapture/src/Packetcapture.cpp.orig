@@ -65,11 +65,8 @@ Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObje
   ft_init.dst_port_flag = ft_init.src_port_flag = ft_init.network_filter_src_flag = ft_init.network_filter_dst_flag = ft_init.l4proto_flag = false;
   t_filters_in.set(0x0, ft_init);
   t_filters_out.set(0x0, ft_init);
-<<<<<<< HEAD
   writeHeader = true;
   dt = "";
-=======
->>>>>>> added network operation
 }
 
 void Packetcapture::writeDump(const std::vector<uint8_t> &packet,
@@ -139,6 +136,7 @@ void Packetcapture::packet_in(polycube::service::Sense sense,
   switch (sense) {
     case polycube::service::Sense::INGRESS:
     pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::INGRESS).get(0x0);
+<<<<<<< HEAD
     if( getNetworkmode() == true ){
       addPacket(packet, pkt_values);    /* store the packet */
     }else{
@@ -152,6 +150,13 @@ void Packetcapture::packet_in(polycube::service::Sense sense,
     }else{
       writeDump(packet, pkt_values);
     }
+=======
+    addPacket(packet, pkt_values);
+    break;
+    case polycube::service::Sense::EGRESS:
+    pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::EGRESS).get(0x0);
+    addPacket(packet, pkt_values);
+>>>>>>> Fixed Snaplen bug. Added capture name choise in Packetcapture_Client
     break;
   }
   send_packet_out(pkt, sense, false);
@@ -201,11 +206,9 @@ void Packetcapture::setAnomimize(const bool &value) {
 std::string Packetcapture::getDump() {
   std::stringstream dump;
 <<<<<<< HEAD
-
-  if(network_mode_flag){
-    dump << "the service is running in network mode";
 =======
   std::ofstream myFile;
+  std::streamsize len;
 
   if(!packets_captured.empty()){
     if(network_mode_flag){
@@ -230,18 +233,15 @@ std::string Packetcapture::getDump() {
         pkt_hdr->ts_usec = p->getTimestampMicroseconds();
         pkt_hdr->len = p->getPacketlen();
         pkt_hdr->caplen = p->getCapturelen();
+        filters->getSnaplen() < p->getRawPacketData().size() ? len = filters->getSnaplen() : len = p->getRawPacketData().size();
           
         myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
-        myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), p->getRawPacketData().size());
+        myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), len );
       }
+>>>>>>> Fixed Snaplen bug. Added capture name choise in Packetcapture_Client
 
-      myFile.close();
-      char *cwdr_ptr = get_current_dir_name();
-      std::string wdr(cwdr_ptr);
-      dump << "capture dump in " << wdr << "/capture.pcap" << std::endl;
-    }
-    
->>>>>>> added network operation
+  if(network_mode_flag){
+    dump << "the service is running in network mode";
   }else{
       char *cwdr_ptr = get_current_dir_name();
       std::string wdr(cwdr_ptr);
@@ -285,12 +285,9 @@ std::shared_ptr<Packet> Packetcapture::getPacket() {
     auto p = packets_captured.front();
     if(network_mode_flag){                            /* pop this element */
       packets_captured.erase(packets_captured.begin());
-<<<<<<< HEAD
       if(filters->getSnaplen() < p->getPacketlen()){
         p->packet.resize(filters->getSnaplen());
       }
-=======
->>>>>>> added network operation
     }
     return p;
   }
@@ -331,7 +328,10 @@ void Packetcapture::delPacket() {
 }
 
 void Packetcapture::attach() {
+<<<<<<< HEAD
   dt = std::string("");
+=======
+>>>>>>> Fixed Snaplen bug. Added capture name choise in Packetcapture_Client
   logger()->debug("{0} attached", this->get_name());
 }
 
