@@ -45,6 +45,7 @@ def connect(address):
         print('\t===Packetcapture Client===\n\n')
         return json.loads(response.text)
 
+
 def printnames(todos):
     global Nservices
     print('services:\n')
@@ -84,9 +85,11 @@ def selectService(todos, address):
     except:
         print("Closing...")
 
+
 def showusage():
     print("client.py <IPv4 address> <file destination name>")
     print("\t-h/--help: show the usage menu")
+
 
 def checkIp(param):
     if param == 'localhost':
@@ -99,6 +102,7 @@ def checkIp(param):
     except:
         print("Invalid IP address")
         exit()
+
 
 def initGlobalHeader(address):
     global service_name, PCAP_MAGICAL_NUMBER, PCAP_MJ_VERN_NUMBER, PCAP_MI_VERN_NUMBER, PCAP_LOCAL_CORECTIN, PCAP_ACCUR_TIMSTAMP, PCAP_MAX_LENGTH_CAP, PCAP_DATA_LINK_TYPE
@@ -121,11 +125,13 @@ def initGlobalHeader(address):
     PCAP_MAX_LENGTH_CAP = todos3['snaplen']
     PCAP_DATA_LINK_TYPE = todos3['linktype']
 
+
 def writeGlobalHeader():
     global f
     f = open(sys.argv[2] + ".pcap", "ab+")
     f.write(struct.pack('@ I H H i I I I ', PCAP_MAGICAL_NUMBER, PCAP_MJ_VERN_NUMBER, PCAP_MI_VERN_NUMBER, PCAP_LOCAL_CORECTIN, PCAP_ACCUR_TIMSTAMP, PCAP_MAX_LENGTH_CAP, PCAP_DATA_LINK_TYPE))
     
+
 def getAndWritePacket(address):
     global f
     url = 'http://'+address+':9000/polycube/v1/packetcapture/'+service_name+'/packet/'
@@ -146,7 +152,7 @@ def getAndWritePacket(address):
     else:
         time.sleep(0.1)
 
-    
+
 def listening():
     global f, stop
     while(1):
@@ -154,8 +160,6 @@ def listening():
             f.close()
             break
         getAndWritePacket(sys.argv[1])
-
-
 
 
 def main():
@@ -182,10 +186,5 @@ def main():
     listener.join()
 
 
-    
-
-    
 if __name__ == "__main__":
     main()
-
-
