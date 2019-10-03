@@ -17,13 +17,13 @@ using namespace polycube::service::model;
 
 class Packet : public PacketBase {
 
-  std::vector<uint8_t> packet;
   uint32_t ts_microsec;
   uint32_t ts_sec;
   uint32_t packet_len;
   uint32_t capture_len;
 
  public:
+  std::vector<uint8_t> packet;
   Packet(Packetcapture &parent, const PacketJsonObject &conf);
   virtual ~Packet();
 
