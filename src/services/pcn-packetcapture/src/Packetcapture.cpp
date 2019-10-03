@@ -79,12 +79,10 @@ void Packetcapture::packet_in(polycube::service::Sense sense,
   switch (sense) {
     case polycube::service::Sense::INGRESS:
     pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::INGRESS).get(0x0);
-    logger()->debug("ingress: packet in the fast path");
     addPacket(packet, pkt_values);
     break;
     case polycube::service::Sense::EGRESS:
     pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::EGRESS).get(0x0);
-    logger()->debug("egress: packet in the fast path");
     addPacket(packet, pkt_values);
     break;
   }
@@ -135,6 +133,7 @@ void Packetcapture::setAnomimize(const bool &value) {
 std::string Packetcapture::getDump() {
   std::stringstream dump;
   std::ofstream myFile;
+  std::streamsize len;
 
   if(!packets_captured.empty()){
     if(network_mode_flag){
@@ -159,9 +158,10 @@ std::string Packetcapture::getDump() {
         pkt_hdr->ts_usec = p->getTimestampMicroseconds();
         pkt_hdr->len = p->getPacketlen();
         pkt_hdr->caplen = p->getCapturelen();
+        filters->getSnaplen() < p->getRawPacketData().size() ? len = filters->getSnaplen() : len = p->getRawPacketData().size();
           
         myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
-        myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), p->getRawPacketData().size());
+        myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), len );
       }
 
       myFile.close();
@@ -211,6 +211,9 @@ std::shared_ptr<Packet> Packetcapture::getPacket() {
     auto p = packets_captured.front();
     if(network_mode_flag){                            /* pop this element */
       packets_captured.erase(packets_captured.begin());
+      if(filters->getSnaplen() < p->getPacketlen()){
+        p->packet.resize(filters->getSnaplen());
+      }
     }
     return p;
   }
@@ -228,7 +231,7 @@ void Packetcapture::addPacket(const std::vector<uint8_t> &packet,
     p->setTimestampSeconds((uint32_t) tp.tv_sec);
     p->setTimestampMicroseconds((uint32_t) tp.tv_usec);
     p->setPacketlen((uint32_t) packet.size());
-    if(p->getPacketlen() > filters->getSnaplen()){     //TODO: test me!
+    if(p->getPacketlen() > filters->getSnaplen()){
       p->setCapturelen(filters->getSnaplen());
     }else{
       p->setCapturelen(p->getPacketlen());
@@ -250,13 +253,7 @@ void Packetcapture::delPacket() {
 }
 
 void Packetcapture::attach() {
-  try {
-  logger()->info("attached");
-    std::string parent_peer = get_parent_parameter("peer");
-    logger()->info("parent peer is: {0}", parent_peer);
-  } catch (const std::exception &e) {
-    logger()->warn("Error getting parent parameter: {0}", e.what());
-  }
+  logger()->debug("{0} attached", this->get_name());
 }
 
 void Packetcapture::updateFiltersMaps(){

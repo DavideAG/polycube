@@ -100,5 +100,3 @@ std::string Packet::getRawdata() {
 void Packet::setRawdata(const std::string &value) {
   throw std::runtime_error("Packet::setRawdata: Method not implemented");
 }
-
-
