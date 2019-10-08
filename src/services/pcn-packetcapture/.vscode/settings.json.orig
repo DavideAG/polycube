@@ -58,9 +58,15 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
+<<<<<<< HEAD
         "valarray": "cpp",
         "unordered_set": "cpp",
         "cinttypes": "cpp",
         "typeindex": "cpp"
     }
 }
+=======
+        "valarray": "cpp"
+    }
+}
+>>>>>>> Added resilient write and timestamp name for dump file in the server service
