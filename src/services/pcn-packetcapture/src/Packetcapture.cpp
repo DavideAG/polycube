@@ -10,6 +10,7 @@
 #include <sys/time.h>
 #include <iomanip>
 #include <iostream>
+#include <ctime>
 #include <fstream>
 #include "unistd.h"
 #include "Packetcapture.h"
@@ -21,7 +22,6 @@
 
 typedef int bpf_int32; 
 typedef u_int bpf_u_int32;
-
 
 struct pcap_file_header {
   bpf_u_int32 magic;      /* magic number */
@@ -62,8 +62,62 @@ Packetcapture::Packetcapture(const std::string name, const PacketcaptureJsonObje
   ft_init.dst_port_flag = ft_init.src_port_flag = ft_init.network_filter_src_flag = ft_init.network_filter_dst_flag = ft_init.l4proto_flag = false;
   t_filters_in.set(0x0, ft_init);
   t_filters_out.set(0x0, ft_init);
+  writeHeader = true;
+  dt = "";
 }
 
+void Packetcapture::writeDump(const std::vector<uint8_t> &packet,
+    const packetHeaders &pkt_values){
+  PacketJsonObject pj;
+  auto p = std::shared_ptr<Packet>(new Packet(*this, pj));
+  struct timeval tp;
+  std::streamsize len;
+
+  if( dt == "" ){
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    std::stringstream tmstmp;
+    tmstmp << ltm->tm_mday << "-" << ltm->tm_mon << "-" << (ltm->tm_year + 1900) << "-" << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec;
+    dt = tmstmp.str();
+  }
+  
+  myFile.open("capture_"+ dt +".pcap", std::ios::binary | std::ios::app);
+
+  if( writeHeader == true ){
+    struct pcap_file_header *pcap_header = new struct pcap_file_header;
+    pcap_header->magic = global_header->getMagic();
+    pcap_header->version_major = global_header->getVersionMajor();
+    pcap_header->version_minor = global_header->getVersionMinor();
+    pcap_header->thiszone = global_header->getThiszone();   //timestamp are always in GMT
+    pcap_header->sigfigs = global_header->getSigfigs();
+    pcap_header->snaplen = filters->getSnaplen();
+    pcap_header->linktype = global_header->getLinktype();
+
+    myFile.write(reinterpret_cast<const char*>(pcap_header), sizeof(*pcap_header));
+    writeHeader = false;
+  }
+  gettimeofday(&tp, NULL);
+  p->setTimestampSeconds((uint32_t) tp.tv_sec);
+  p->setTimestampMicroseconds((uint32_t) tp.tv_usec);
+  p->setPacketlen((uint32_t) packet.size());
+  if(p->getPacketlen() > filters->getSnaplen()){
+    p->setCapturelen(filters->getSnaplen());
+  }else{
+    p->setCapturelen(p->getPacketlen());
+  }
+  p->setRawPacketData(packet);
+
+  struct pcap_pkthdr *pkt_hdr = new struct pcap_pkthdr;
+  pkt_hdr->ts_sec = p->getTimestampSeconds();
+  pkt_hdr->ts_usec = p->getTimestampMicroseconds();
+  pkt_hdr->len = p->getPacketlen();
+  pkt_hdr->caplen = p->getCapturelen();
+  filters->getSnaplen() < p->getRawPacketData().size() ? len = filters->getSnaplen() : len = p->getRawPacketData().size();
+
+  myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
+  myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), len );
+  myFile.close();
+}
 
 Packetcapture::~Packetcapture() {
   logger()->info("Destroying Packetcapture instance");
@@ -79,11 +133,19 @@ void Packetcapture::packet_in(polycube::service::Sense sense,
   switch (sense) {
     case polycube::service::Sense::INGRESS:
     pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::INGRESS).get(0x0);
-    addPacket(packet, pkt_values);
+    if( getNetworkmode() == true ){
+      addPacket(packet, pkt_values);    /* store the packet */
+    }else{
+      writeDump(packet, pkt_values);
+    }
     break;
     case polycube::service::Sense::EGRESS:
     pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::EGRESS).get(0x0);
-    addPacket(packet, pkt_values);
+    if( getNetworkmode() == true ){
+      addPacket(packet, pkt_values);    /* store the packet */
+    }else{
+      writeDump(packet, pkt_values);
+    }
     break;
   }
   send_packet_out(pkt, sense, false);
@@ -132,46 +194,13 @@ void Packetcapture::setAnomimize(const bool &value) {
 
 std::string Packetcapture::getDump() {
   std::stringstream dump;
-  std::ofstream myFile;
-  std::streamsize len;
 
-  if(!packets_captured.empty()){
-    if(network_mode_flag){
-      dump << "the service is running in network mode";
-    }else{
-      struct pcap_file_header *pcap_header = new struct pcap_file_header;
-      pcap_header->magic = global_header->getMagic();
-      pcap_header->version_major = global_header->getVersionMajor();
-      pcap_header->version_minor = global_header->getVersionMinor();
-      pcap_header->thiszone = global_header->getThiszone();   //timestamp are always in GMT
-      pcap_header->sigfigs = global_header->getSigfigs();
-      pcap_header->snaplen = filters->getSnaplen();
-      pcap_header->linktype = global_header->getLinktype();
-
-      myFile.open("capture.pcap", std::ios::binary);
-      myFile.write(reinterpret_cast<const char*>(pcap_header), sizeof(*pcap_header));
-
-      for(auto it = packets_captured.begin(); it != packets_captured.end(); it++){
-        std::shared_ptr<Packet> p = *it;
-        struct pcap_pkthdr *pkt_hdr = new struct pcap_pkthdr;
-        pkt_hdr->ts_sec = p->getTimestampSeconds();
-        pkt_hdr->ts_usec = p->getTimestampMicroseconds();
-        pkt_hdr->len = p->getPacketlen();
-        pkt_hdr->caplen = p->getCapturelen();
-        filters->getSnaplen() < p->getRawPacketData().size() ? len = filters->getSnaplen() : len = p->getRawPacketData().size();
-          
-        myFile.write(reinterpret_cast<const char*>(pkt_hdr), sizeof(*pkt_hdr));
-        myFile.write(reinterpret_cast<const char*>(&p->getRawPacketData()[0]), len );
-      }
-
-      myFile.close();
+  if(network_mode_flag){
+    dump << "the service is running in network mode";
+  }else{
       char *cwdr_ptr = get_current_dir_name();
       std::string wdr(cwdr_ptr);
-      dump << "capture dump in " << wdr << "/capture.pcap" << std::endl;
-    }
-    
-  }else{
-    dump << "no packets captured";
+      dump << "capture dump in " << wdr << "/capture_"+ dt +".pcap" << std::endl;
   }
   
   return dump.str();
@@ -253,6 +282,7 @@ void Packetcapture::delPacket() {
 }
 
 void Packetcapture::attach() {
+  dt = std::string("");
   logger()->debug("{0} attached", this->get_name());
 }
 
