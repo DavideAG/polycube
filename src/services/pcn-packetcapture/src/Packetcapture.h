@@ -9,6 +9,7 @@
 #pragma once
 
 #include <list>
+#include <fstream>
 
 #include "../base/PacketcaptureBase.h"
 
@@ -19,6 +20,7 @@
 
 #include <tins/ethernetII.h>
 #include <tins/tins.h>
+
 
 struct packetHeaders {
   uint64_t srcMac;
@@ -45,6 +47,9 @@ class Packetcapture : public PacketcaptureBase {
  std::list<std::shared_ptr<Packet>> packets_captured;
  uint8_t CapStatus;
  bool network_mode_flag;
+ bool writeHeader;
+ std::ofstream myFile;
+ std::string dt;
  
   void addPacket(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 
@@ -106,4 +111,5 @@ class Packetcapture : public PacketcaptureBase {
   void delGlobalheader() override;
 
   void updateFiltersMaps();
+  void writeDump(const std::vector<uint8_t> &packet, const packetHeaders &pkt_values);
 };
