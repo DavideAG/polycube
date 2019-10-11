@@ -69,8 +69,6 @@ void Filters::setSrc(const std::string &value) {
   inet_pton(AF_INET, source_ip.data(), &ip_src_filter);
   ip_src_filter = ntohl(ip_src_filter);
   networkSrc = ip_src_filter & netmaskSrc;
-  //network_packet = pkt_values.srcIp & netmask_filter;     //TODO: do it in the fast path
-
   set_srcIp = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();
@@ -89,8 +87,6 @@ void Filters::setDst(const std::string &value) {
   inet_pton(AF_INET, source_ip.data(), &ip_dst_filter);
   ip_dst_filter = ntohl(ip_dst_filter);
   networkDst = ip_dst_filter & netmaskDst;
-  //network_packet = pkt_values.dstIp & netmask_filter;     //TODO: do it in the fast path
-
   set_dstIp = true;
   if(!bootstrap)
     parent_.updateFiltersMaps();

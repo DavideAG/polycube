@@ -9,6 +9,9 @@ set -x
 
 function cleanup {
   set +e
+  polycubectl detach packetcapture_service br1:toveth1
+  polycubectl del packetcapture_service
+  polycubectl del br1
   delete_veth 2
   echo "FAIL"
 }
