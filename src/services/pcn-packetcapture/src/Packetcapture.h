@@ -37,7 +37,7 @@ struct packetHeaders {
 
 using namespace polycube::service::model;
 using polycube::service::ProgramType;
-using polycube::service::Sense;
+using polycube::service::Direction;
 
 class Packetcapture : public PacketcaptureBase {
  
@@ -57,7 +57,7 @@ class Packetcapture : public PacketcaptureBase {
   Packetcapture(const std::string name, const PacketcaptureJsonObject &conf);
   virtual ~Packetcapture();
 
-  void packet_in(polycube::service::Sense sense,
+  void packet_in(polycube::service::Direction direction,
                  polycube::service::PacketInMetadata &md,
                  const std::vector<uint8_t> &packet) override;
 
