@@ -123,15 +123,15 @@ Packetcapture::~Packetcapture() {
   logger()->info("Destroying Packetcapture instance");
 }
 
-void Packetcapture::packet_in(polycube::service::Sense sense,
+void Packetcapture::packet_in(polycube::service::Direction direction,
     polycube::service::PacketInMetadata &md,
     const std::vector<uint8_t> &packet) {
   
   Tins::EthernetII pkt(&packet[0], packet.size());
   packetHeaders pkt_values;
       
-  switch (sense) {
-    case polycube::service::Sense::INGRESS:
+  switch (direction) {
+    case polycube::service::Direction::INGRESS:
     pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::INGRESS).get(0x0);
     if( getNetworkmode() == true ){
       addPacket(packet, pkt_values);    /* store the packet */
@@ -139,7 +139,7 @@ void Packetcapture::packet_in(polycube::service::Sense sense,
       writeDump(packet, pkt_values);
     }
     break;
-    case polycube::service::Sense::EGRESS:
+    case polycube::service::Direction::EGRESS:
     pkt_values = get_array_table<packetHeaders>("pkt_header", 0, ProgramType::EGRESS).get(0x0);
     if( getNetworkmode() == true ){
       addPacket(packet, pkt_values);    /* store the packet */
@@ -148,7 +148,7 @@ void Packetcapture::packet_in(polycube::service::Sense sense,
     }
     break;
   }
-  send_packet_out(pkt, sense, false);
+  send_packet_out(pkt, direction, false);
 }
 
 PacketcaptureCaptureEnum Packetcapture::getCapture() {
