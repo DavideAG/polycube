@@ -355,4 +355,8 @@ void Packetcapture::replaceGlobalheader(const GlobalheaderJsonObject &conf) {
 
 void Packetcapture::delGlobalheader() {
   throw std::runtime_error("Packetcapture::delGlobalheader: method not implemented");
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ad5eab6c7a44d77f8a6adfce47c8b715fcecdb0c
