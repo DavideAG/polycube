@@ -28,6 +28,7 @@
 #include "Service.h"
 #include "../../config.h"
 #include "cubes_dump.h"
+#include "Hateoas.h"
 
 #include "LeafResource.h"
 #include "ListResource.h"
@@ -187,6 +188,13 @@ void ParentResource::get(const Request &request, ResponseWriter response) {
     }
     errors.push_back(ReadValue(cube_name, keys));
   }
+
+  //TODO: fare qui il controllo se è un valid_cube_root valido
+  if (Hateoas::is_valid_cube_root(request.resource(), Service::Cube(request))) {
+      //TODO: qui bisogna inserire gli href al json della riposta
+    logger->info("entrato in is_cube_root");
+  }
+
   Server::ResponseGenerator::Generate(std::move(errors), std::move(response));
 }
 

@@ -65,7 +65,7 @@ set(polycubed_sources
   cubes_dump.cpp
   ${server_sources}
   ${CMAKE_CURRENT_BINARY_DIR}/load_services.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
+  ${CMAKE_CURRENT_BINARY_DIR}/version.cpp server/Resources/Endpoint/Hateoas.cpp server/Resources/Endpoint/Hateoas.h)
 
 add_executable(polycubed
   ${polycubed_sources})

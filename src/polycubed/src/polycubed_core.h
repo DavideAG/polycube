@@ -31,6 +31,7 @@
 
 #include "cube_factory_impl.h"
 #include "port.h"
+#include "server/Resources/Endpoint/Hateoas.h"
 //#include "extiface_info.h"
 
 using json = nlohmann::json;
@@ -125,6 +126,7 @@ class PolycubedCore {
   BaseModel *base_model_;
   // This manages the cubes configuration in memory and the dump to file
   CubesDump *cubes_dump_;
+  Hateoas &hateoas_handler;
 };
 
 }  // namespace polycubed
