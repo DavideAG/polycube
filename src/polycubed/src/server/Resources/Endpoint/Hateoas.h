@@ -18,6 +18,9 @@
 #define POLYCUBE_HATEOAS_H
 
 #include <string>
+#include <map>
+#include <list>
+#include <iterator>
 
 #include <iostream>             //TODO: ricorda di rimuovere iostream quando non ti servira' piu'
 
@@ -29,7 +32,12 @@
 
 class Hateoas {
 
-    Hateoas() {}
+    /* this map contains all anonymous endpoints for a determinate service
+     * the structure is:
+     * root_service_endpoint -> list_of_unlabelled_endpoints */
+    static std::unordered_map<std::string, std::list<std::string>> endpoints_for_all_services;
+
+    Hateoas(){}
 
 public:
 
@@ -41,10 +49,14 @@ public:
     Hateoas(Hateoas const&)         = delete;
     void operator=(Hateoas const&)  = delete;
 
-    static bool is_valid_cube_root(const std::string source, const std::string cube_name);
+    /* add an entry for the new service in endpoints_for_all_services */
+    static void add_service_root_rest_endpoint(std::string root_rest_endpoint);
 
+    /* add endpoints of a service to the http response */
     static void add_href();
 
+    /* check if http GET is for a registered root endpoint of a service */
+    static bool is_valid_cube_root(const std::string source, const std::string cube_name);
 };
 
 

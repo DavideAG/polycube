@@ -45,6 +45,8 @@ Service::Service(const std::string &name, const std::string &description,
   using Pistache::Rest::Routes::bind;
   auto router = core_->get_rest_server()->get_router();
 
+  Hateoas::add_service_root_rest_endpoint(body_rest_endpoint_);
+
   router->get(body_rest_endpoint_, bind(&Service::get_body, this));
   router->post(body_rest_endpoint_, bind(&Service::post_body, this));
   router->patch(body_rest_endpoint_, bind(&Service::patch_body, this));

@@ -2,12 +2,17 @@
 // Created by root on 21/02/20.
 //
 
+#include <spdlog/spdlog.h>
 #include "Hateoas.h"
 
+//TODO: debugger->  spdlog::get("polycubed")->info("loading {0} shared object", name_);
+
+std::unordered_map<std::string, std::list<std::string>> Hateoas::endpoints_for_all_services;
 
 bool Hateoas::is_valid_cube_root(const std::string source, const std::string cube_name) {
     return true;
 }
+
 
 void Hateoas::add_href() {
     //TODO: qui bisogna aggiungere gli href al jason.
@@ -32,7 +37,24 @@ void Hateoas::add_href() {
 
     logger->info(val);
     */
+}
 
+
+void Hateoas::add_service_root_rest_endpoint(std::string root_rest_endpoint) {
+    auto itr = Hateoas::endpoints_for_all_services.find(root_rest_endpoint);
+    auto end = Hateoas::endpoints_for_all_services.end();
+
+    if (itr == end) {
+        Hateoas::endpoints_for_all_services.insert(
+                std::pair(root_rest_endpoint, std::list<std::string>())
+        );
+    }
+
+    //TODO: ricorda di rimuovere questa parte in basso, è solo per debug
+    spdlog::get("polycubed")->info("\n\n");
+    for (auto it = Hateoas::endpoints_for_all_services.begin(); it != Hateoas::endpoints_for_all_services.end(); ++it)
+        spdlog::get("polycubed")->info("{0}", it->first);
+    spdlog::get("polycubed")->info("\n");
 
 }
 
