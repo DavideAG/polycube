@@ -189,12 +189,10 @@ void ParentResource::get(const Request &request, ResponseWriter response) {
     errors.push_back(ReadValue(cube_name, keys));
   }
 
-  //TODO: fare qui il controllo se è un valid_cube_root valido
-  if (Hateoas::is_valid_cube_root(request.resource(), Service::Cube(request))) {
-      //TODO: qui bisogna inserire gli href al json della riposta
-      //TODO: valutare i parametri da passare ad add_href
+  if (  errors[0].error_tag == kOk
+        && Hateoas::is_valid_cube_root(request.resource(), Service::Cube(request))
+      ) {
       Hateoas::add_href();
-      logger->info("entrato in is_cube_root. href caricati al json");
   }
 
   Server::ResponseGenerator::Generate(std::move(errors), std::move(response));
