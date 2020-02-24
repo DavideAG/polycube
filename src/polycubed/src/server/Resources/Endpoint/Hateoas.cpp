@@ -10,6 +10,8 @@
 std::unordered_map<std::string, std::list<std::string>> Hateoas::endpoints_for_all_services;
 
 bool Hateoas::is_valid_cube_root(const std::string source, const std::string cube_name) {
+    //TODO: da qui. Bisogna eliminare il nome del cubo accertandosi che sia l' ultimo dell' endpoint
+    spdlog::get("polycubed")->info("\n\n{0}\n{1}\n\n", source, cube_name);
     return true;
 }
 
@@ -50,11 +52,28 @@ void Hateoas::add_service_root_rest_endpoint(std::string root_rest_endpoint) {
         );
     }
 
-    //TODO: ricorda di rimuovere questa parte in basso, è solo per debug
-    spdlog::get("polycubed")->info("\n\n");
-    for (auto it = Hateoas::endpoints_for_all_services.begin(); it != Hateoas::endpoints_for_all_services.end(); ++it)
-        spdlog::get("polycubed")->info("{0}", it->first);
-    spdlog::get("polycubed")->info("\n");
+}
+
+void Hateoas::add_leaf_endpoint(const std::string &root_endpoint, std::string &leaf_endpoint) {
+
+    std::string root = root_endpoint.substr(0, root_endpoint.find(":name"));
+    auto service_pos_it = Hateoas::endpoints_for_all_services.find(root);
+
+    if (service_pos_it != Hateoas::endpoints_for_all_services.end()) {
+        service_pos_it->second.push_back(std::move(leaf_endpoint));
+    } else {
+        spdlog::get("polycubed")->trace(
+                "Hateoas - add_leaf_endpoint - root_endpoint not found!"
+                );
+    }
 
 }
 
+
+//TODO: ricorda di rimuovere questa parte in basso, è solo per debug
+/*
+spdlog::get("polycubed")->info("\n\n");
+for (auto it = Hateoas::endpoints_for_all_services.begin(); it != Hateoas::endpoints_for_all_services.end(); ++it)
+    spdlog::get("polycubed")->info("{0}", it->first);
+spdlog::get("polycubed")->info("\n");
+*/

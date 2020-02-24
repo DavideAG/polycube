@@ -52,11 +52,15 @@ public:
     /* add an entry for the new service in endpoints_for_all_services */
     static void add_service_root_rest_endpoint(std::string root_rest_endpoint);
 
+    /* add a leaf endpoint for a service */
+    static void add_leaf_endpoint(const std::string &root_endpoint, std::string &leaf_endpoint);
+
     /* add endpoints of a service to the http response */
     static void add_href();
 
     /* check if http GET is for a registered root endpoint of a service */
     static bool is_valid_cube_root(const std::string source, const std::string cube_name);
+
 };
 
 

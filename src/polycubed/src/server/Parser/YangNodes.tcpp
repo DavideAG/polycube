@@ -38,6 +38,7 @@
 #include "../Resources/Endpoint/ListResource.h"
 #include "../Resources/Endpoint/ParentResource.h"
 #include "../Resources/Endpoint/Service.h"
+#include "../Resources/Endpoint/Hateoas.h"
 
 #include "server/../utils/utils.h"
 
@@ -350,6 +351,9 @@ void Yang::ParseLeaf(
         configuration, init_only_config, mandatory,
         Types::ScalarFromYang(leaf->type.base), std::move(default_value),
         is_enum, values);
+
+    /* injecting the endpoint for the service */
+    Hateoas::add_leaf_endpoint(e_parent->Endpoint(), endpoint);
   } else {
     leaf_res = factory_->BodyLeaf(
         leaf->name, description, cli_example, parent.get(),
