@@ -17,13 +17,12 @@
 #include <spdlog/spdlog.h>
 #include "Hateoas.h"
 
-#include <string.h>
-
-//TODO: debugger->  spdlog::get("polycubed")->info("loading {0} shared object", name_);
 
 std::unordered_map<std::string, std::list<std::string>> Hateoas::endpoints_for_all_services;
 
-bool Hateoas::is_valid_cube_root(const std::string &source, const std::string &cube_name) {
+
+bool Hateoas::is_valid_cube_root(
+        const std::string &source, const std::string &cube_name) {
 
     std::string root = source.substr(0, source.find(cube_name));
     auto service_pos_it = Hateoas::endpoints_for_all_services.find(root);
@@ -33,20 +32,9 @@ bool Hateoas::is_valid_cube_root(const std::string &source, const std::string &c
 }
 
 
-unsigned int Hateoas::endpoints_to_attach_size(const std::list<std::string> &list_of_endpoints) {
-
-    unsigned int size = 0;
-
-    for (auto endpoint : list_of_endpoints) {
-        size += (endpoint.size() + strlen("\n"));           //TODO: valutare se mantenere il \n
-    }
-
-    return size;
-
-}
-
-
-std::list<std::string> Hateoas::endpoints_to_attach(const std::string &service_root_endpoint, const std::string &service_name) {
+std::list<std::string> Hateoas::endpoints_to_attach(
+        const std::string &service_root_endpoint,
+        const std::string &service_name) {
 
     std::string root = service_root_endpoint.substr(0, service_root_endpoint.find(service_name));
     auto service_pair = Hateoas::endpoints_for_all_services.find(root);
@@ -56,34 +44,29 @@ std::list<std::string> Hateoas::endpoints_to_attach(const std::string &service_r
 }
 
 
-char * Hateoas::add_href(char *old_response_body, const std::string &service_endpoint, const std::string &service_name) {
+char * Hateoas::add_links(
+        char *old_response_body, const std::string &service_endpoint,
+        const std::string &service_name) {
 
     auto hateoas_endpoints = Hateoas::endpoints_to_attach(service_endpoint, service_name);
-    unsigned int endpoints_size = Hateoas::endpoints_to_attach_size(hateoas_endpoints);
 
-    char *new_response = static_cast<char *>(malloc(strlen(old_response_body) + endpoints_size + 1));
+    json js = json::parse(old_response_body);
+    js.push_back({"links", hateoas_endpoints});
+    std::string json_dump(std::move(js.dump()));
 
-    if (new_response == nullptr) {
-        spdlog::get("polycubed")->debug(
-                "Hateoas - add_href - Error at malloc!"
-        );
-    }
-
-    new_response[0] = '\0';
-    strcat(new_response,old_response_body);
-
-    for (auto endpoint : hateoas_endpoints) {
-        strcat(new_response,endpoint.c_str());
-        strcat(new_response,"\n");      //TODO: valutare se mantenere il \n
-    }
+    char * new_response_body = new char[json_dump.size() + 1];
+    std::copy(json_dump.begin(), json_dump.end(), new_response_body);
+    new_response_body[json_dump.size()] = '\0';
 
     ::free(old_response_body);
-    return new_response;
+
+    return new_response_body;
 
 }
 
 
-void Hateoas::add_service_root_rest_endpoint(const std::string &root_rest_endpoint) {
+void Hateoas::add_service_root_rest_endpoint(
+        const std::string &root_rest_endpoint) {
 
     auto itr = Hateoas::endpoints_for_all_services.find(root_rest_endpoint);
     auto end = Hateoas::endpoints_for_all_services.end();
@@ -96,7 +79,8 @@ void Hateoas::add_service_root_rest_endpoint(const std::string &root_rest_endpoi
 
 }
 
-void Hateoas::add_leaf_endpoint(const std::string &root_endpoint, std::string &leaf_endpoint) {
+void Hateoas::add_leaf_endpoint(
+        const std::string &root_endpoint, std::string &leaf_endpoint) {
 
     std::string root = root_endpoint.substr(0, root_endpoint.find(":name"));
     auto service_pos_it = Hateoas::endpoints_for_all_services.find(root);
@@ -113,12 +97,3 @@ void Hateoas::add_leaf_endpoint(const std::string &root_endpoint, std::string &l
     }
 
 }
-
-
-//TODO: ricorda di rimuovere questa parte in basso, è solo per debug
-/*
-spdlog::get("polycubed")->info("\n\n");
-for (auto it = Hateoas::endpoints_for_all_services.begin(); it != Hateoas::endpoints_for_all_services.end(); ++it)
-    spdlog::get("polycubed")->info("{0}", it->first);
-spdlog::get("polycubed")->info("\n");
-*/

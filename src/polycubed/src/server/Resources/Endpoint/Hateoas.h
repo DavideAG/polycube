@@ -21,6 +21,9 @@
 #include <map>
 #include <list>
 #include <iterator>
+#include "polycube/services/json.hpp"
+
+using json = nlohmann::json;
 
 
 /*
@@ -38,9 +41,9 @@ class Hateoas {
 
     Hateoas(){}
 
+    /* returns all endpoints scheme for a determinate service */
     static std::list<std::string> endpoints_to_attach(const std::string &service_root_endpoint, const std::string &service_name);
 
-    static unsigned int endpoints_to_attach_size(const std::list<std::string> &list_of_endpoints);
 
 public:
 
@@ -59,7 +62,7 @@ public:
     static void add_leaf_endpoint(const std::string &root_endpoint, std::string &leaf_endpoint);
 
     /* add endpoints of a service to the http response */
-    static char * add_href(char *response_body, const std::string &service_endpoint, const std::string &service_name);
+    static char * add_links(char *response_body, const std::string &service_endpoint, const std::string &service_name);
 
     /* check if http GET is for a registered root endpoint of a service */
     static bool is_valid_cube_root(const std::string &source, const std::string &cube_name);

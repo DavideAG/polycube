@@ -189,10 +189,10 @@ void ParentResource::get(const Request &request, ResponseWriter response) {
     errors.push_back(ReadValue(cube_name, keys));
   }
 
-  if (  errors[0].error_tag == kOk
-        && Hateoas::is_valid_cube_root(request.resource(), Service::Cube(request))
-      ) {
-      errors[0].message = Hateoas::add_href(errors[0].message, request.resource(), Service::Cube(request));
+  if ( errors[0].error_tag == kOk &&
+       Hateoas::is_valid_cube_root(request.resource(), Service::Cube(request))) {
+      errors[0].message = Hateoas::add_links(
+              errors[0].message, request.resource(), Service::Cube(request));
   }
 
   Server::ResponseGenerator::Generate(std::move(errors), std::move(response));
