@@ -22,7 +22,6 @@
 #include <list>
 #include <iterator>
 
-#include <iostream>             //TODO: ricorda di rimuovere iostream quando non ti servira' piu'
 
 /*
  * Hateoas is a singleton class that allow to export all enpoints
@@ -39,6 +38,10 @@ class Hateoas {
 
     Hateoas(){}
 
+    static std::list<std::string> endpoints_to_attach(const std::string &service_root_endpoint, const std::string &service_name);
+
+    static unsigned int endpoints_to_attach_size(const std::list<std::string> &list_of_endpoints);
+
 public:
 
     static Hateoas& getInstance() {
@@ -50,16 +53,16 @@ public:
     void operator=(Hateoas const&)  = delete;
 
     /* add an entry for the new service in endpoints_for_all_services */
-    static void add_service_root_rest_endpoint(std::string root_rest_endpoint);
+    static void add_service_root_rest_endpoint(const std::string &root_rest_endpoint);
 
     /* add a leaf endpoint for a service */
     static void add_leaf_endpoint(const std::string &root_endpoint, std::string &leaf_endpoint);
 
     /* add endpoints of a service to the http response */
-    static void add_href();
+    static char * add_href(char *response_body, const std::string &service_endpoint, const std::string &service_name);
 
     /* check if http GET is for a registered root endpoint of a service */
-    static bool is_valid_cube_root(const std::string source, const std::string cube_name);
+    static bool is_valid_cube_root(const std::string &source, const std::string &cube_name);
 
 };
 

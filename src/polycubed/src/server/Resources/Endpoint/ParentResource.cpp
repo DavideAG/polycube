@@ -192,7 +192,7 @@ void ParentResource::get(const Request &request, ResponseWriter response) {
   if (  errors[0].error_tag == kOk
         && Hateoas::is_valid_cube_root(request.resource(), Service::Cube(request))
       ) {
-      Hateoas::add_href();
+      errors[0].message = Hateoas::add_href(errors[0].message, request.resource(), Service::Cube(request));
   }
 
   Server::ResponseGenerator::Generate(std::move(errors), std::move(response));
